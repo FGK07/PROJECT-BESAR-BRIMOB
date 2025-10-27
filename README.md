@@ -2,7 +2,7 @@
 
 <p align="center">
   <i>Website e-commerce perlengkapan olahraga modern berbasis PHP & MySQL, dengan panel Admin, manajemen stok ukuran, sistem pre-order, dan integrasi filament Laravel.</i><br>
-  Dibangun dengan ❤️ menggunakan <b>Composer</b> untuk backend dan <b>npm + TailwindCSS</b> untuk frontend.
+  Dibangun dengan 🔥 menggunakan <b>Composer</b> untuk backend dan <b>npm + TailwindCSS</b> untuk frontend.
 </p>
 
 <p align="center">
