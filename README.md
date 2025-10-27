@@ -57,90 +57,110 @@ Aplikasi ini memiliki sistem **login multi-role (Admin & User)**, dukungan **pre
 
 ---
 
-## 🚀 Instalasi Lengkap
-### 1 Clone Repository
-
-```bash
-# Clone repository dari GitHub
-git clone https://github.com/FarendraAugust/SinemaKita.git
-
-# Masuk ke folder project
-cd SinemaKita
+ 🚀 Panduan Instalasi Lengkap Proyek Brimob Sport
+ Dibuat oleh: Ferdian Egha Kuncoro & Belgi Setiawan
+ 
+## 1️⃣ Clone repository dari GitHub
+``` bash
+git clone https://github.com/FerdianEgha/BrimobSport.git
 ```
-### 2 Instal Dependensi PHP (Backend)
 
-```bash
-# Pastikan sudah menginstal Composer terlebih dahulu.
+##  Masuk ke folder project
+``` bash
+cd BrimobSport
+```
+
+## 2️⃣ Instal dependensi PHP (Backend)
+ ``` bash
+# Pastikan sudah install Composer terlebih dahulu:
 # Unduh di: https://getcomposer.org/download/
-
 composer install
 ```
-### 3 Instal Dependensi Frontend (npm)
 
-```bash
-# Pastikan Node.js dan npm sudah terpasang.
+## 3️⃣ Instal dependensi Frontend (Tailwind / npm)
+``` bash
+# Pastikan Node.js & npm sudah terpasang:
 # Unduh di: https://nodejs.org/
 
 npm install
 ```
 
-### 4 Konfigurasi File .env
-
-```bash
+## 4️⃣ Konfigurasi file .env
+## Salin template .env.example ke .env baru
+``` bash
 cp .env.example .env
 ```
+``` bash
+# Kemudian ubah konfigurasi database sesuai MySQL kamu:
+# ----------------------------------------------
+# DB_HOST=localhost
+# DB_PORT=3306
+# DB_DATABASE=brimob_sport
+# DB_USERNAME=root
+# DB_PASSWORD=
+# ----------------------------------------------
+```
 
-### 6 Jalankan Aplikasi (PHP Built In Server)
+## 5️⃣ Migrasi database (Jika menggunakan Laravel / Filament)
+## Jika menggunakan PHP Native, cukup import file SQL ke phpMyAdmin
 
+``` bash
+php artisan migrate --seed
+```
+
+## 6️⃣ Jalankan aplikasi (PHP Built-in Server)
 ```bash
 php -S localhost:8000
 ```
 
-### 7 Jalankan Frondted
 
-```bash
-npm run dev
-npm run build
-=======
-### 7️⃣ Jalankan Frontend
-
-```bash
+## 7️⃣ Jalankan Frontend (Tailwind)
+ ``` bash
 npm run dev
 ```
 
----
+## Untuk mode produksi (optimasi build)
+
+```bash
+npm run build
+```
 
 ## 🧠 Tips Tambahan
+ ✅ Gunakan Laragon agar mudah mengelola PHP, MySQL, dan Node.js
+** 🔐 Pastikan file .env berada di root folder proyek
+** 🔄 Jalankan `npm run build` setiap kali ada perubahan besar di frontend
+** 💾 Backup database sebelum mengubah struktur tabel
 
-* ✅ Gunakan **Laragon** agar lebih mudah mengelola PHP, MySQL, dan Node.js.
-* 🔐 Pastikan file `.env` berada di root folder.
-* 🔄 Jalankan `npm run build` setiap kali melakukan perubahan besar di frontend.
-
----
-
-## 🗂️ Struktur Folder
-
+## 🗂️ Struktur Folder Brimob Sport
+``` bash
+ BrimobSport/
+ ├── admin/                 # Panel admin (kelola produk, transaksi, user)
+ ├── user/                  # Tampilan user (homepage, keranjang, profil)
+ ├── produk/                # Halaman produk & kategori
+ ├── pre_order/             # Modul pre-order
+ ├── auth/                  # Login & register
+ ├── uploads/               # Gambar produk & bukti transfer
+ ├── src/                   # Frontend (TailwindCSS, JS, assets)
+ │   ├── css/
+ │   └── js/
+ ├── vendor/                # Dependensi Composer
+ ├── config/                # Koneksi database & pengaturan dasar
+ ├── .env.example           # Template konfigurasi environment
+ ├── composer.json          # Dependensi PHP
+ ├── package.json           # Dependensi npm
+ └── index.php              # Entry point utama website
 ```
-BrimobSport/
-├── admin/               # Panel Admin & manajemen produk
-├── user/                # Halaman utama pengguna
-├── produk/              # Tampilan produk & kategori
-├── auth/                # Sistem login/register
-├── uploads/             # Gambar produk & bukti transfer
-├── src/                 # Sumber frontend (TailwindCSS/Vite)
-├── config/              # Koneksi database & konstanta
-├── vendor/              # Dependensi Composer
-└── index.php
 
+##  ⚙️ Teknologi yang Digunakan
+``` bash
+ Backend     : PHP 8.1+, MySQLi / PDO
+ Frontend    : TailwindCSS, HTML, JavaScript
+ Framework   : Laravel Filament (opsional)
+ Autentikasi : PHP Sessions
+ Tools       : Composer, Node.js, npm, Laragon/XAMPP
 ```
 
----
-└── index.php
+**Dibuat dengan 🔥 oleh [Ferdian Egha Kuncoro](https://github.com/FGK07) & [Belgi Setiawan]()**
 
 
 
-
-### 1️⃣ Clone Repository
-```bash
-git clone https://github.com/FerdianEgha/BrimobSport.git
-cd BrimobSport
