@@ -58,11 +58,69 @@ Aplikasi ini memiliki sistem **login multi-role (Admin & User)**, dukungan **pre
 ---
 
 ## 🚀 Instalasi Lengkap
+### 1 Clone Repository
+
+```bash
+# Clone repository dari GitHub
+git clone https://github.com/FarendraAugust/SinemaKita.git
+
+# Masuk ke folder project
+cd SinemaKita
+```
+### 2 Instal Dependensi PHP (Backend)
+
+```bash
+# Pastikan sudah menginstal Composer terlebih dahulu.
+# Unduh di: https://getcomposer.org/download/
+
 composer install
+```
+### 3 Instal Dependensi Frontend (npm)
+
+```bash
+# Pastikan Node.js dan npm sudah terpasang.
+# Unduh di: https://nodejs.org/
+
 npm install
+```
+
+### 4 Konfigurasi File .env
+
+```bash
 cp .env.example .env
+```
+
+### 6 Jalankan Aplikasi (PHP Built In Server)
+
+```bash
 php -S localhost:8000
+```
+
+### 7 Jalankan Frondted
+
+```bash
 npm run dev
+npm run build
+=======
+### 7️⃣ Jalankan Frontend
+
+```bash
+npm run dev
+```
+
+---
+
+## 🧠 Tips Tambahan
+
+* ✅ Gunakan **Laragon** agar lebih mudah mengelola PHP, MySQL, dan Node.js.
+* 🔐 Pastikan file `.env` berada di root folder.
+* 🔄 Jalankan `npm run build` setiap kali melakukan perubahan besar di frontend.
+
+---
+
+## 🗂️ Struktur Folder
+
+```
 BrimobSport/
 ├── admin/               # Panel Admin & manajemen produk
 ├── user/                # Halaman utama pengguna
@@ -72,6 +130,11 @@ BrimobSport/
 ├── src/                 # Sumber frontend (TailwindCSS/Vite)
 ├── config/              # Koneksi database & konstanta
 ├── vendor/              # Dependensi Composer
+└── index.php
+
+```
+
+---
 └── index.php
 
 
