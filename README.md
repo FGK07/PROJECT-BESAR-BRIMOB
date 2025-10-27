@@ -136,8 +136,7 @@ npm run build
  BrimobSport/
  ├── admin/                 # Panel admin (kelola produk, transaksi, user)
  ├── user/                  # Tampilan user (homepage, keranjang, profil)
- ├── produk/                # Halaman produk & kategori
- ├── pre_order/             # Modul pre-order
+ ├── produk/                # Halaman produk & kategori         
  ├── auth/                  # Login & register
  ├── uploads/               # Gambar produk & bukti transfer
  ├── src/                   # Frontend (TailwindCSS, JS, assets)
@@ -148,7 +147,7 @@ npm run build
  ├── .env.example           # Template konfigurasi environment
  ├── composer.json          # Dependensi PHP
  ├── package.json           # Dependensi npm
- └── index.php              # Entry point utama website
+ └── homepage.php              # Entry point utama website
 ```
 
 ##  ⚙️ Teknologi yang Digunakan
