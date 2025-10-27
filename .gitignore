@@ -8,3 +8,4 @@ package.json
 composer.json
 composer.lock
 img/
+auth/mailer.php
