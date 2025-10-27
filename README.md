@@ -58,6 +58,24 @@ Aplikasi ini memiliki sistem **login multi-role (Admin & User)**, dukungan **pre
 ---
 
 ## 🚀 Instalasi Lengkap
+composer install
+npm install
+cp .env.example .env
+php -S localhost:8000
+npm run dev
+BrimobSport/
+├── admin/               # Panel Admin & manajemen produk
+├── user/                # Halaman utama pengguna
+├── produk/              # Tampilan produk & kategori
+├── auth/                # Sistem login/register
+├── uploads/             # Gambar produk & bukti transfer
+├── src/                 # Sumber frontend (TailwindCSS/Vite)
+├── config/              # Koneksi database & konstanta
+├── vendor/              # Dependensi Composer
+└── index.php
+
+
+
 
 ### 1️⃣ Clone Repository
 ```bash
