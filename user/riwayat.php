@@ -97,6 +97,26 @@ switch ($from) {
                 </h2>
                 <p class="text-xs text-gray-500 mt-1">Tanggal: <?= $trx['tanggal'] ?></p>
               </div>
+              <div>
+                <?php if (strtolower($trx['status']) === 'disetujui'): ?>
+                  <span class="px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700 border border-blue-300">
+                    Disetujui
+                  </span>
+                <?php elseif (strtolower($trx['status']) === 'selesai'): ?>
+                  <span class="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700 border border-green-300">
+                    Selesai
+                  </span>
+                <?php elseif (in_array(strtolower($trx['status']), ['ditolak', 'batal', 'dibatalkan oleh user'])): ?>
+                  <span class="px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700 border border-red-300">
+                    Dibatalkan
+                  </span>
+                <?php elseif (in_array(strtolower($trx['status']), ['menunggu konfirmasi admin', 'pending'])): ?>
+                  <span class="px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700 border border-yellow-300">
+                    Menunggu
+                  </span>
+                <?php endif; ?>
+              </div>
+
             </div>
 
             <?php
@@ -127,7 +147,7 @@ switch ($from) {
               case 'disetujui':
               case 'diproses':
                 $warna = 'bg-blue-500 w-2/3';
-                $label = 'Pesanan Diproses';
+                $label = 'Pesanan disetujui admin';
                 break;
 
               // 🟢 Selesai
@@ -219,6 +239,8 @@ switch ($from) {
 
             <!-- Tombol aksi -->
             <div class="mt-6 flex flex-wrap items-center gap-3">
+
+              <!-- Tombol aksi utama -->
               <?php if ($trx['status'] === 'disetujui'): ?>
                 <form action="update_status_user.php" method="post"
                   onsubmit="return confirmPesanan(event, <?= $trx['id'] ?>)">
@@ -228,23 +250,24 @@ switch ($from) {
                     ✅ Pesanan Diterima
                   </button>
                 </form>
-              <?php elseif (in_array($trx['status'], ['menunggu pembayaran', 'pending'])): ?>
-                <!-- Tombol Batalkan Pesanan -->
-                <form action="batal_transaksi.php" method="post" class="relative group"
+
+              <?php elseif (in_array(strtolower($trx['status']), ['menunggu pembayaran', 'pending'])): ?>
+                <!-- Tombol Batalkan -->
+                <form action="batal_transaksi.php" method="post"
                   onsubmit="return confirmBatal(event, <?= $trx['id'] ?>)">
                   <input type="hidden" name="transaksi_id" value="<?= $trx['id'] ?>">
                   <button type="submit"
                     class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white rounded-md shadow-sm transition-all duration-200
-                            bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 focus:ring-2 focus:ring-red-400 focus:ring-offset-1
-                            hover:scale-[1.03] active:scale-[0.98] cursor-pointer">
+                bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 focus:ring-2 focus:ring-red-400 focus:ring-offset-1
+                hover:scale-[1.03] active:scale-[0.98] cursor-pointer">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                     Batalkan Pesanan
                   </button>
                 </form>
-                <!-- Tombol Upload Bukti Pembayaran -->
-                <!-- Tombol Upload Bukti Pembayaran -->
+
+                <!-- Tombol Upload Bukti -->
                 <?php if (empty($trx['bukti_transfer']) && strtolower($trx['metode_pembayaran']) !== 'cod'): ?>
                   <a href="../user/upload_bukti.php?id=<?= $trx['id'] ?>"
                     class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm font-medium shadow-sm transition flex items-center gap-2 hover:scale-[1.03] active:scale-[0.98] cursor-pointer">
@@ -254,14 +277,10 @@ switch ($from) {
                   <span class="px-4 py-2 bg-yellow-100 text-yellow-700 rounded-md text-sm font-medium shadow-sm flex items-center gap-2">
                     💵 Bayar di Tempat (COD)
                   </span>
-                <?php else: ?>
-                  <span class="px-4 py-2 bg-gray-200 text-gray-600 rounded-md text-sm font-medium shadow-sm flex items-center gap-2">
-                    ✅ Bukti sudah diupload
-                  </span>
                 <?php endif; ?>
-
               <?php endif; ?>
-              <?php if ($trx['status'] === 'selesai' || $trx['status'] === 'batal' || $trx['status'] === 'dibatalkan oleh user' || $trx['status'] === 'ditolak') : ?>
+
+              <?php if (in_array(strtolower($trx['status']), ['selesai', 'batal', 'dibatalkan oleh user', 'ditolak'])): ?>
                 <form action="hapus_riwayat.php" method="post"
                   onsubmit="return confirmDeleteTransaksi(event, <?= $trx['id'] ?>)">
                   <input type="hidden" name="transaksi_id" value="<?= $trx['id'] ?>">
@@ -271,7 +290,16 @@ switch ($from) {
                   </button>
                 </form>
               <?php endif; ?>
+
+              <!-- ✅ Selalu tampil jika bukti sudah ada -->
+              <?php if (!empty($trx['bukti_transfer'])): ?>
+                <span class="px-4 py-2 bg-gray-200 text-gray-600 rounded-md text-sm font-medium shadow-sm flex items-center gap-2">
+                  ✅ Bukti sudah diupload
+                </span>
+              <?php endif; ?>
+
             </div>
+
 
           </div>
         </div>
@@ -348,7 +376,7 @@ switch ($from) {
       e.preventDefault();
 
       Swal.fire({
-        title: 'Hapus Produk?',
+        title: 'Konfirmasi Penerimaan Pesanan?',
         text: "Apakah anda sudah menerima pesanan ini? Proses ini tidak bisa diurungkan.",
         icon: 'warning',
         showCancelButton: true,
