@@ -36,80 +36,92 @@ $backUrl = $_SESSION['backUrl'] ?? "dashboard_admin.php";
 
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kelola Produk & Kategori</title>
     <link rel="stylesheet" href="../src/output.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
-<body class="min-h-screen bg-gray-100 px-8 py-10">
+
+<body class="min-h-screen bg-gray-100 px-3 sm:px-8 py-6 sm:py-10">
 
     <!-- Container utama -->
     <div class="max-w-8xl mx-auto">
 
         <!-- Tombol kembali kiri atas -->
-        <div class="flex justify-start mb-6">
+        <div class="flex justify-start mb-4 sm:mb-6">
             <a href="<?= htmlspecialchars($backUrl) ?>"
-                class="px-6 py-3 bg-gray-700 text-white rounded-lg hover:bg-gray-800 shadow-md transition duration-200">
+                class="px-4 sm:px-6 py-2 sm:py-3 bg-gray-700 text-white rounded-lg hover:bg-gray-800 shadow-md text-xs sm:text-base transition duration-200">
                 ← Kembali
             </a>
         </div>
 
         <!-- Judul -->
-        <h1 class="text-4xl font-bold text-gray-800 mb-8 tracking-wide">🛍️ Kelola Produk & Kategori</h1>
+        <h1 class="text-2xl sm:text-4xl font-bold text-gray-800 mb-6 sm:mb-8 tracking-wide text-center sm:text-left leading-tight">
+            🛍️ Kelola Produk & Kategori
+        </h1>
 
         <!-- Flash message -->
         <?php if (isset($_SESSION['flash'])): ?>
-            <div id="flash" class="fixed top-0 right-0 left-0 bg-emerald-100 text-emerald-800 border border-emerald-300 rounded-md px-4 py-3 mb-6 text-center font-medium shadow-sm">
+            <div id="flash"
+                class="fixed top-3 left-0 sm:left-1/2 sm:-translate-x-1/2 
+          w-full sm:w-auto sm:max-w-md 
+          bg-emerald-100 text-emerald-800 border border-emerald-300 
+          rounded-md sm:rounded-lg px-4 sm:px-6 py-2 sm:py-3 
+          text-center font-medium text-xs sm:text-sm 
+          shadow-md sm:shadow-lg 
+          z-[9999] animate-slide-down">
                 <?= htmlspecialchars($_SESSION['flash']) ?>
             </div>
             <?php unset($_SESSION['flash']); ?>
         <?php endif; ?>
 
+
         <!-- ===================== KATEGORI ===================== -->
-        <div class="bg-white rounded-2xl shadow-lg border border-gray-200 mb-10">
-            <div class="p-4 border-b bg-gray-800 text-white flex justify-between items-center">
-                <h2 class="text-lg font-semibold">📂 Daftar Kategori</h2>
-                <a href="tambah_kategori.php?"
-                    class="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-semibold hover:bg-emerald-700 transition shadow-sm">
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-200 mb-8 sm:mb-10 overflow-hidden">
+            <div class="p-3 sm:p-4 border-b bg-gray-800 text-white flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0 text-center sm:text-left">
+                <h2 class="text-base sm:text-lg font-semibold">📂 Daftar Kategori</h2>
+                <a href="tambah_kategori.php"
+                    class="px-3 sm:px-4 py-1.5 sm:py-2 bg-emerald-600 text-white rounded-lg text-xs sm:text-sm font-semibold hover:bg-emerald-700 transition shadow-sm">
                     ➕ Tambah Kategori
                 </a>
             </div>
 
-            <!-- Form -->
+            <!-- Tabel kategori -->
             <div class="overflow-x-auto">
-                <table class="min-w-full border-collapse">
-                    <thead class="bg-gray-100 text-gray-700 uppercase text-sm border-b border-gray-200">
+                <table class="min-w-full border-collapse text-[11px] sm:text-sm">
+                    <thead class="bg-gray-100 text-gray-700 uppercase border-b border-gray-200">
                         <tr>
-                            <th class="py-3 px-4 text-center">No</th>
-                            <th class="py-3 px-4 text-center">ID</th>
-                            <th class="py-3 px-4">Nama Kategori</th>
-                            <th class="py-3 px-4">Slug</th>
-                            <th class="py-3 px-4 text-center">Aksi</th>
+                            <th class="py-2 sm:py-3 px-3 sm:px-4 text-center">No</th>
+                            <th class="py-2 sm:py-3 px-3 sm:px-4 text-center">ID</th>
+                            <th class="py-2 sm:py-3 px-3 sm:px-4">Nama Kategori</th>
+                            <th class="py-2 sm:py-3 px-3 sm:px-4">Slug</th>
+                            <th class="py-2 sm:py-3 px-3 sm:px-4 text-center">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody class="text-gray-800 text-sm">
+                    <tbody class="text-gray-800">
                         <?php
                         $no = 1;
                         if ($kategori->num_rows > 0): ?>
                             <?php while ($row = $kategori->fetch_assoc()): ?>
                                 <tr class="odd:bg-gray-50 even:bg-gray-100 hover:bg-gray-50 transition duration-200">
-                                    <td class="py-3 px-4 text-center font-semibold"><?= htmlspecialchars($no++) ?></td>
-                                    <td class="py-3 px-4 text-center font-semibold"><?= htmlspecialchars($row['id']) ?></td>
-                                    <td class="py-3 px-4 text-center"><?= htmlspecialchars($row['nama']) ?></td>
-                                    <td class="py-3 px-4 text-gray-600 text-center"><?= htmlspecialchars($row['slug']) ?></td>
+                                    <td class="py-2 sm:py-3 px-3 text-center font-semibold"><?= htmlspecialchars($no++) ?></td>
+                                    <td class="py-2 sm:py-3 px-3 text-center"><?= htmlspecialchars($row['id']) ?></td>
+                                    <td class="py-2 sm:py-3 px-3 text-center"><?= htmlspecialchars($row['nama']) ?></td>
+                                    <td class="py-2 sm:py-3 px-3 text-center text-gray-600"><?= htmlspecialchars($row['slug']) ?></td>
 
-                                    <!-- Tombol aksi -->
-                                    <td class="py-3 px-4 text-center">
-                                        <div class="flex justify-center gap-2">
+                                    <td class="py-2 sm:py-3 px-3 text-center">
+                                        <div class="flex flex-wrap justify-center gap-1 sm:gap-2">
                                             <a href="edit_kategori.php?id=<?= $row['id'] ?>"
-                                                class="px-4 py-1.5 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 transition shadow-sm">
+                                                class="px-3 py-1 sm:px-4 sm:py-1.5 bg-blue-600 text-white rounded-md text-[11px] sm:text-sm font-medium hover:bg-blue-700 transition shadow-sm">
                                                 Edit
                                             </a>
                                             <form action="hapus_kategori.php" method="POST" onsubmit="return confirmDeleteKategori(event, <?= $row['id'] ?>)" class="inline">
                                                 <input type="hidden" name="id" value="<?= $row['id'] ?>">
                                                 <button type="submit"
-                                                    class="px-4 py-1.5 bg-red-600 text-white rounded-md text-sm font-medium hover:bg-red-700 transition shadow-sm cursor-pointer">
+                                                    class="px-3 py-1 sm:px-4 sm:py-1.5 bg-red-600 text-white rounded-md text-[11px] sm:text-sm font-medium hover:bg-red-700 transition shadow-sm cursor-pointer">
                                                     Hapus
                                                 </button>
                                             </form>
@@ -119,7 +131,7 @@ $backUrl = $_SESSION['backUrl'] ?? "dashboard_admin.php";
                             <?php endwhile; ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="4" class="py-4 text-center text-gray-500 italic">Belum ada kategori.</td>
+                                <td colspan="5" class="py-3 text-center text-gray-500 italic">Belum ada kategori.</td>
                             </tr>
                         <?php endif; ?>
                     </tbody>
@@ -127,90 +139,72 @@ $backUrl = $_SESSION['backUrl'] ?? "dashboard_admin.php";
             </div>
         </div>
 
+
         <!-- ===================== PRODUK ===================== -->
-        <div class="bg-white rounded-2xl shadow-lg border border-gray-200">
-            <div class="p-4 border-b bg-gray-800 text-white flex justify-between items-center">
-                <h2 class="text-lg font-semibold">📦 Daftar Produk</h2>
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+            <div class="p-3 sm:p-4 border-b bg-gray-800 text-white flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0 text-center sm:text-left">
+                <h2 class="text-base sm:text-lg font-semibold">📦 Daftar Produk</h2>
                 <a href="tambah_produk.php?from=kelola_produk&source=<?= urlencode($from) ?>"
-                    class="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-semibold hover:bg-emerald-700 transition shadow-sm">
+                    class="px-3 sm:px-4 py-1.5 sm:py-2 bg-emerald-600 text-white rounded-lg text-xs sm:text-sm font-semibold hover:bg-emerald-700 transition shadow-sm">
                     ➕ Tambah Produk
                 </a>
             </div>
 
-            <!-- Form -->
+            <!-- Tabel produk -->
             <div class="overflow-x-auto">
-                <table class="min-w-full border-collapse">
-                    <thead class="bg-gray-100 text-gray-700 uppercase text-sm border-b border-gray-200">
+                <table class="min-w-full border-collapse text-[11px] sm:text-sm">
+                    <thead class="bg-gray-100 text-gray-700 uppercase border-b border-gray-200">
                         <tr>
-                            <th class="py-3 px-4 text-center">No</th>
-                            <th class="py-3 px-4 text-center">ID</th>
-                            <th class="py-3 px-4 text-center">Kode Produk</th>
-                            <th class="py-3 px-4">Nama Produk</th>
-                            <th class="py-3 px-4 text-center">Kategori</th>
-                            <th class="py-3 px-4 text-center">Harga</th>
-                            <th class="py-3 px-4 text-center">Stok</th>
-                            <th class="py-3 px-4 text-center">Gambar</th>
-                            <th class="py-3 px-4 text-center">Aksi</th>
+                            <th class="py-2 sm:py-3 px-3 sm:px-4 text-center">No</th>
+                            <th class="py-2 sm:py-3 px-3 sm:px-4 text-center">ID</th>
+                            <th class="py-2 sm:py-3 px-3 sm:px-4 text-center">Kode</th>
+                            <th class="py-2 sm:py-3 px-3 sm:px-4 text-left">Nama Produk</th>
+                            <th class="py-2 sm:py-3 px-3 sm:px-4 text-center">Kategori</th>
+                            <th class="py-2 sm:py-3 px-3 sm:px-4 text-center">Harga</th>
+                            <th class="py-2 sm:py-3 px-3 sm:px-4 text-center">Stok</th>
+                            <th class="py-2 sm:py-3 px-3 sm:px-4 text-center">Gambar</th>
+                            <th class="py-2 sm:py-3 px-3 sm:px-4 text-center">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody class="text-gray-800 text-sm">
+                    <tbody class="text-gray-800">
                         <?php
                         $no = 1;
                         if ($produk->num_rows > 0): ?>
                             <?php while ($row = $produk->fetch_assoc()): ?>
                                 <tr class="odd:bg-gray-50 even:bg-gray-100 hover:bg-gray-50 transition duration-200">
-                                    <td class="py-3 px-4 text-center font-semibold"><?= htmlspecialchars($no++) ?></td>
-                                    <td class="py-3 px-4 text-center font-semibold"><?= htmlspecialchars($row['id']) ?></td>
-                                    <td class="py-3 px-4 text-center font-semibold"><?= htmlspecialchars($row['kode_produk']) ?></td>
-                                    <td class="py-3 px-4 text-center font-medium"><?= htmlspecialchars($row['nama']) ?></td>
-                                    <td class="py-3 px-4 text-center text-gray-700"><?= htmlspecialchars($row['kategori'] ?? '-') ?></td>
-                                    <td class="py-3 px-4 text-center text-green-600 font-semibold">Rp <?= number_format($row['harga'], 0, ',', '.') ?></td>
-                                    <td class="py-3 px-4 text-center text-gray-700"><?= $row['stok'] ?></td>
-                                    <td class="py-3 px-4 text-center">
+                                    <td class="py-2 sm:py-3 px-3 text-center font-semibold"><?= htmlspecialchars($no++) ?></td>
+                                    <td class="py-2 sm:py-3 px-3 text-center"><?= htmlspecialchars($row['id']) ?></td>
+                                    <td class="py-2 sm:py-3 px-3 text-center"><?= htmlspecialchars($row['kode_produk']) ?></td>
+                                    <td class="py-2 sm:py-3 px-3 text-left"><?= htmlspecialchars($row['nama']) ?></td>
+                                    <td class="py-2 sm:py-3 px-3 text-center"><?= htmlspecialchars($row['kategori'] ?? '-') ?></td>
+                                    <td class="py-2 sm:py-3 px-3 text-center text-green-600 font-semibold">Rp <?= number_format($row['harga'], 0, ',', '.') ?></td>
+                                    <td class="py-2 sm:py-3 px-3 text-center"><?= $row['stok'] ?></td>
+                                    <td class="py-2 sm:py-3 px-3 text-center">
                                         <img src="../img/<?= htmlspecialchars($row['gambar']) ?>" alt="<?= htmlspecialchars($row['nama']) ?>"
-                                            class="w-16 h-16 object-contain mx-auto rounded-md border">
+                                            class="w-12 h-12 sm:w-16 sm:h-16 object-contain mx-auto rounded-md border">
                                     </td>
 
-                                    <!-- Tombol aksi -->
-                                    <td class="py-3 px-4 text-center">
-                                        <div class="flex justify-center gap-2">
-                                            <?php if ($from === "dashboard_admin"): ?>
-                                                <a href="edit_produk.php?id=<?= $row['id'] ?>&from=kelola_produk&from=<?= urlencode($from) ?>"
-                                                    class="px-4 py-1.5 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 transition shadow-sm">
-                                                    Edit
-                                                </a>
-                                                <!-- Tombol Hapus -->
-                                                <form action="hapus_produk.php" method="POST" onsubmit="return confirmDeleteProduk(event, <?= $row['id'] ?>)" class="inline">
-                                                    <input type="hidden" name="id" value="<?= $row['id'] ?>">
-                                                    <input type="hidden" name="from" value="kelola_produk">
-                                                    <button type="submit"
-                                                        class="px-4 py-1.5 bg-red-600 text-white rounded-md text-sm font-medium hover:bg-red-700 transition shadow-sm cursor-pointer">
-                                                        Hapus
-                                                    </button>
-                                                </form>
-
-                                            <?php elseif ($from !== "dashboard_admin"): ?>
-                                                <a href="edit_produk.php?id=<?= $row['id'] ?>&from=kelola_produk&<?= urlencode($from) ?>=<?= urlencode($nama) ?>"
-                                                    class="px-4 py-1.5 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 transition shadow-sm">
-                                                    Edit
-                                                </a>
-                                                <form action="hapus_produk.php" method="POST" onsubmit="return confirmDeleteProduk(event, <?= $row['id'] ?>)" class="inline">
-                                                    <input type="hidden" name="id" value="<?= $row['id'] ?>">
-                                                    <input type="hidden" name="from" value="kelola_produk">
-                                                    <button type="submit"
-                                                        class="px-4 py-1.5 bg-red-600 text-white rounded-md text-sm font-medium hover:bg-red-700 transition shadow-sm cursor-pointer">
-                                                        Hapus
-                                                    </button>
-                                                </form>
-                                            <?php endif; ?>
+                                    <td class="py-2 sm:py-3 px-3 text-center">
+                                        <div class="flex flex-wrap justify-center gap-1 sm:gap-2">
+                                            <a href="edit_produk.php?id=<?= $row['id'] ?>&from=kelola_produk&from=<?= urlencode($from) ?>"
+                                                class="px-3 py-1 sm:px-4 sm:py-1.5 bg-blue-600 text-white rounded-md text-[11px] sm:text-sm font-medium hover:bg-blue-700 transition shadow-sm">
+                                                Edit
+                                            </a>
+                                            <form action="hapus_produk.php" method="POST" onsubmit="return confirmDeleteProduk(event, <?= $row['id'] ?>)" class="inline">
+                                                <input type="hidden" name="id" value="<?= $row['id'] ?>">
+                                                <input type="hidden" name="from" value="kelola_produk">
+                                                <button type="submit"
+                                                    class="px-3 py-1 sm:px-4 sm:py-1.5 bg-red-600 text-white rounded-md text-[11px] sm:text-sm font-medium hover:bg-red-700 transition shadow-sm cursor-pointer">
+                                                    Hapus
+                                                </button>
+                                            </form>
                                         </div>
                                     </td>
-
                                 </tr>
                             <?php endwhile; ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="7" class="py-4 text-center text-gray-500 italic">Belum ada produk.</td>
+                                <td colspan="9" class="py-3 text-center text-gray-500 italic">Belum ada produk.</td>
                             </tr>
                         <?php endif; ?>
                     </tbody>
@@ -220,8 +214,6 @@ $backUrl = $_SESSION['backUrl'] ?? "dashboard_admin.php";
     </div>
 
     <script>
-
-        // === Timeout flash message ===
         setTimeout(() => {
             const flash = document.getElementById('flash');
             if (flash) {
@@ -229,6 +221,7 @@ $backUrl = $_SESSION['backUrl'] ?? "dashboard_admin.php";
                 setTimeout(() => flash.remove(), 1000);
             }
         }, 3000);
+
 
         // Alert style
         function confirmDeleteProduk(e, id) {

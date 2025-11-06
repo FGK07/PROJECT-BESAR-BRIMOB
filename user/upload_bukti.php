@@ -94,25 +94,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Upload Bukti Pembayaran</title>
   <link rel="stylesheet" href="../src/output.css">
 </head>
-<body class="min-h-screen bg-gray-100 flex flex-col items-center justify-center text-gray-800">
 
-  <div class="bg-white p-8 rounded-2xl shadow-xl w-[420px] border border-gray-200">
-    <h1 class="text-2xl font-bold text-center mb-4">Upload Bukti Pembayaran</h1>
-    <p class="text-center text-gray-600 mb-3">
+<body class="min-h-screen bg-gray-100 flex flex-col items-center justify-center text-gray-800 px-4 sm:px-0">
+
+  <div class="bg-white w-full max-w-[420px] sm:w-[420px] p-6 sm:p-8 rounded-2xl shadow-xl border border-gray-200 my-10 sm:my-0">
+
+    <!-- Judul -->
+    <h1 class="text-xl sm:text-2xl font-bold text-center mb-3 sm:mb-4">
+      Upload Bukti Pembayaran
+    </h1>
+
+    <!-- Total -->
+    <p class="text-center text-gray-600 mb-3 text-sm sm:text-base">
       Total Pembayaran: <br>
-      <span class="text-emerald-600 font-semibold text-lg">
+      <span class="text-emerald-600 font-semibold text-lg sm:text-xl">
         Rp<?= number_format($trx['total'], 0, ',', '.') ?>
       </span>
     </p>
 
-    <!-- ✅ Info Rekening -->
+    <!-- Info Rekening -->
     <?php if ($rekening): ?>
-      <div class="bg-gray-50 border border-gray-200 rounded-lg p-3 mb-5 text-sm">
+      <div class="bg-gray-50 border border-gray-200 rounded-lg p-3 sm:p-4 mb-5 text-xs sm:text-sm leading-relaxed">
         <p class="font-medium text-gray-700 mb-1">Transfer ke rekening:</p>
         <p class="text-gray-800">
           <span class="font-semibold"><?= htmlspecialchars($trx['nama_metode']) ?>:</span>
@@ -121,44 +130,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <p class="text-gray-800">
           <span class="font-semibold">a.n.</span> <?= htmlspecialchars($atas_nama) ?>
         </p>
-        <p class="text-xs text-gray-500 mt-1 italic">
+        <p class="text-[11px] sm:text-xs text-gray-500 mt-1 italic">
           Setelah transfer, upload bukti pembayaran (foto/screenshot) di bawah ini.
         </p>
       </div>
     <?php endif; ?>
 
-    <!-- ✅ Form Upload -->
-    <form method="post" enctype="multipart/form-data" class="space-y-4">
+    <!-- Form Upload -->
+    <form method="post" enctype="multipart/form-data" class="space-y-3 sm:space-y-4">
       <input type="file" name="bukti" accept="image/*,.pdf" required
-        class="block w-full border border-gray-300 rounded-md p-2 text-sm bg-white focus:ring-2 focus:ring-emerald-500">
+        class="block w-full border border-gray-300 rounded-md p-2 sm:p-2.5 text-sm bg-white focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none">
 
       <input type="hidden" name="from" value="<?= htmlspecialchars($from) ?>">
       <input type="hidden" name="kategori" value="<?= htmlspecialchars($kategori) ?>">
 
       <button type="submit"
-        class="w-full py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition">
+        class="w-full py-2.5 sm:py-3 bg-black text-white rounded-lg text-sm sm:text-base hover:bg-gray-800 transition">
         Upload Sekarang
       </button>
     </form>
 
-    <!-- ✅ Tombol kembali -->
-    <div class="mt-3">
+    <!-- Tombol Kembali -->
+    <div class="mt-3 sm:mt-4 space-y-2">
       <?php if ($asal === 'homepage'): ?>
         <button type="button"
           onclick="window.location.href='../homepage.php'"
-          class="w-full py-2 text-black border border-gray-300 rounded-lg hover:bg-gray-200 transition">
+          class="w-full py-2 text-sm sm:text-base text-black border border-gray-300 rounded-lg hover:bg-gray-200 transition">
           ← Kembali ke Homepage
         </button>
       <?php elseif (isset($kategori)): ?>
         <button type="button"
           onclick="window.location.href='../produk/kategori.php?nama=<?= urlencode($kategori) ?>'"
-          class="w-full py-2 text-black border border-gray-300 rounded-lg hover:bg-gray-200 transition">
+          class="w-full py-2 text-sm sm:text-base text-black border border-gray-300 rounded-lg hover:bg-gray-200 transition">
           ← Kembali ke Kategori
         </button>
       <?php else: ?>
         <button type="button"
           onclick="window.location.href='../user/riwayat.php'"
-          class="w-full py-2 text-black border border-gray-300 rounded-lg hover:bg-gray-200 transition">
+          class="w-full py-2 text-sm sm:text-base text-black border border-gray-300 rounded-lg hover:bg-gray-200 transition">
           ← Kembali ke Riwayat
         </button>
       <?php endif; ?>
@@ -166,4 +175,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   </div>
 </body>
+
 </html>

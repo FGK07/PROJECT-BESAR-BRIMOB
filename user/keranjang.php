@@ -62,6 +62,7 @@ else {
 
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Keranjang Belanja - BRIMOB SPORT</title>
   <link rel="stylesheet" href="../src/output.css">
 </head>
@@ -69,11 +70,18 @@ else {
 <body class="min-h-screen bg-gray-100 text-gray-800 font-sans px-3 py-6 sm:px-6 sm:py-8">
 
   <!-- Flash Message -->
-  <?php if (isset($_SESSION["flash"])): ?>
-    <div id="flash" class="fixed top-5 left-1/2 -translate-x-1/2 bg-emerald-600 text-white font-medium px-6 py-3 rounded-lg shadow-md z-50">
-      <?= htmlspecialchars($_SESSION["flash"]) ?>
+  <?php if (isset($_SESSION['flash'])): ?>
+    <div id="flash"
+      class="fixed top-3 left-0 sm:left-1/2 sm:-translate-x-1/2 
+          w-full sm:w-auto sm:max-w-md 
+          bg-emerald-100 text-emerald-800 border border-emerald-300 
+          rounded-md sm:rounded-lg px-4 sm:px-6 py-2 sm:py-3 
+          text-center font-medium text-xs sm:text-sm 
+          shadow-md sm:shadow-lg 
+          z-[9999] animate-slide-down">
+      <?= htmlspecialchars($_SESSION['flash']) ?>
     </div>
-    <?php unset($_SESSION["flash"]); ?>
+    <?php unset($_SESSION['flash']); ?>
   <?php endif; ?>
 
   <!--  Header -->
@@ -83,7 +91,7 @@ else {
   </header>
 
   <!-- Kontainer utama -->
-  <main class="max-w-7xl mx-auto bg-white border border-gray-200 rounded-2xl shadow-[0_4px_10px_rgba(0,0,0,0.07)] p-6 sm:p-8">
+  <main class="max-w-7xl mx-auto bg-white border border-gray-200 rounded-2xl shadow-[0_4px_10px_rgba(0,0,0,0.07)] p-4 sm:p-8">
 
     <?php if (empty($produkList)): ?>
       <div class="text-center py-16">
@@ -94,9 +102,10 @@ else {
       </div>
 
     <?php else: ?>
+      <!-- ✅ Wadah tabel fleksibel untuk mobile -->
       <div class="overflow-x-auto">
         <table class="w-full border border-gray-200 rounded-lg overflow-hidden text-sm">
-          <thead class="bg-gray-100 border-b border-gray-200">
+          <thead class="bg-gray-100 border-b border-gray-200 hidden sm:table-header-group">
             <tr class="text-left text-gray-700">
               <th class="p-3 font-semibold">Gambar</th>
               <th class="p-3 font-semibold">Nama</th>
@@ -107,65 +116,110 @@ else {
               <th class="p-3 font-semibold text-center">Aksi</th>
             </tr>
           </thead>
-          <tbody>
-            <?php foreach ($produkList as $item): ?>
-              <tr class="border-b hover:bg-gray-50 transition">
-                <td class="p-3">
-                  <img src="../img/<?= htmlspecialchars($item['gambar']) ?>" alt="<?= htmlspecialchars($item['nama']) ?>" class="w-16 h-16 object-contain rounded border border-gray-200">
-                </td>
-                <td class="p-3 text-gray-800 font-medium"><?= htmlspecialchars($item['nama']) ?></td>
-                <td class="p-3 text-gray-600"><?= htmlspecialchars($item['ukuran']) ?></td>
-                <td class="p-3 text-gray-800">Rp <?= number_format($item['harga'], 0, ',', '.') ?></td>
-                <td class="p-3 text-gray-700"><?= $item['qty'] ?></td>
-                <td class="p-3 font-semibold text-emerald-600">Rp <?= number_format($item['subtotal'], 0, ',', '.') ?></td>
-                <td class="p-3 text-center">
-                  <div class="flex justify-center items-center gap-2">
-                    <form action="hapus_keranjang.php" method="post">
-                      <input type="hidden" name="key" value="<?= $item['id'] . '-' . $item['ukuran'] ?>">
-                      <input type="hidden" name="from" value="<?= htmlspecialchars($_GET['from'] ?? 'homepage') ?>">
-                      <input type="hidden" name="kategori" value="<?= htmlspecialchars($_GET['kategori'] ?? '') ?>">
-                      <button type="submit"
-                        class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-xs font-medium cursor-pointer">
-                        Hapus
-                      </button>
-                    </form>
 
-                    <form action="checkout.php" method="get">
-                      <input type="hidden" name="from" value="keranjang">
-                      <input type="hidden" name="single" value="true">
-                      <input type="hidden" name="kategori" value="<?= urlencode($_GET['kategori'] ?? '') ?>">
-                      <input type="hidden" name="produk_id" value="<?= htmlspecialchars($item['id']) ?>">
-                      <input type="hidden" name="ukuran" value="<?= htmlspecialchars($item['ukuran']) ?>">
-                      <button type="submit"
-                        class="px-3 py-1 bg-black text-white rounded hover:bg-gray-800 text-xs font-medium cursor-pointer">
-                        Checkout
-                      </button>
-                    </form>
+          <!-- ✅ Mobile: ubah setiap baris jadi card -->
+          <tbody class="sm:table-row-group flex flex-col gap-4 sm:gap-0">
+            <?php foreach ($produkList as $item): ?>
+              <tr class="sm:table-row border sm:border-0 rounded-xl sm:rounded-none shadow sm:shadow-none p-4 sm:p-0 flex flex-col sm:table-row bg-white sm:bg-transparent">
+                <td class="p-0 sm:p-3 flex items-center sm:block border-b sm:border-none">
+                  <img src="../img/<?= htmlspecialchars($item['gambar']) ?>" alt="<?= htmlspecialchars($item['nama']) ?>"
+                    class="w-20 h-20 sm:w-16 sm:h-16 object-contain rounded border border-gray-200 mr-4 sm:mr-0">
+                  <div class="flex flex-col sm:hidden">
+                    <span class="font-semibold text-gray-800"><?= htmlspecialchars($item['nama']) ?></span>
+                    <span class="text-gray-600 text-sm">Ukuran: <?= htmlspecialchars($item['ukuran']) ?></span>
+                    <span class="text-gray-700 text-sm">Qty: <?= $item['qty'] ?></span>
                   </div>
                 </td>
+
+                <!-- Desktop cells -->
+                <td class="hidden sm:table-cell p-3 text-gray-800 font-medium"><?= htmlspecialchars($item['nama']) ?></td>
+                <td class="hidden sm:table-cell p-3 text-gray-600"><?= htmlspecialchars($item['ukuran']) ?></td>
+                <td class="hidden sm:table-cell p-3 text-gray-800">Rp <?= number_format($item['harga'], 0, ',', '.') ?></td>
+                <td class="hidden sm:table-cell p-3 text-gray-700"><?= $item['qty'] ?></td>
+                <td class="hidden sm:table-cell p-3 font-semibold text-emerald-600">Rp <?= number_format($item['subtotal'], 0, ',', '.') ?></td>
+
+                <!-- Tombol aksi -->
+                <td class="p-3 text-center">
+                  <div class="flex flex-col sm:flex-row justify-center items-center gap-2 w-full">
+
+                    <!-- Total (muncul di atas tombol saat mobile) -->
+                    <div class="sm:hidden w-full text-right font-semibold text-emerald-600 text-sm mb-1 border-t border-gray-200 pt-2">
+                      Total: Rp <?= number_format($item['subtotal'], 0, ',', '.') ?>
+                    </div>
+
+                    <!-- Tombol-tombol -->
+                    <div class="flex flex-row flex-wrap justify-center items-center gap-2 w-full">
+                      <!-- Tombol Hapus -->
+                      <form action="hapus_keranjang.php" method="post" class="flex-1 sm:flex-none">
+                        <input type="hidden" name="key" value="<?= $item['id'] . '-' . $item['ukuran'] ?>">
+                        <input type="hidden" name="from" value="<?= htmlspecialchars($_GET['from'] ?? 'homepage') ?>">
+                        <input type="hidden" name="kategori" value="<?= htmlspecialchars($_GET['kategori'] ?? '') ?>">
+                        <button type="submit"
+                          class="w-full sm:w-auto px-3 py-2 text-sm font-semibold bg-red-600 text-white rounded-lg hover:bg-red-700 active:scale-95 transition-transform">
+                          Hapus
+                        </button>
+                      </form>
+
+                      <!-- Tombol Checkout -->
+                      <form action="checkout.php" method="get" class="flex-1 sm:flex-none">
+                        <input type="hidden" name="from" value="keranjang">
+                        <input type="hidden" name="single" value="true">
+                        <input type="hidden" name="kategori" value="<?= urlencode($_GET['kategori'] ?? '') ?>">
+                        <input type="hidden" name="produk_id" value="<?= htmlspecialchars($item['id']) ?>">
+                        <input type="hidden" name="ukuran" value="<?= htmlspecialchars($item['ukuran']) ?>">
+                        <button type="submit"
+                          class="w-full sm:w-auto px-3 py-2 text-sm font-semibold bg-black text-white rounded-lg hover:bg-gray-800 active:scale-95 transition-transform">
+                          Checkout
+                        </button>
+                      </form>
+                    </div>
+
+                  </div>
+                </td>
+
               </tr>
             <?php endforeach; ?>
 
-            <tr class="font-bold bg-gray-100 text-gray-800">
+            <!-- Total (hanya desktop) -->
+            <tr class="hidden sm:table-row font-bold bg-gray-100 text-gray-800">
               <td colspan="5" class="p-3 text-right border-t border-gray-200">Total</td>
               <td class="p-3 border-t border-gray-200 text-emerald-600">Rp <?= number_format($total, 0, ',', '.') ?></td>
               <td></td>
             </tr>
           </tbody>
         </table>
+
+        <!-- Total Semua Barang (Mobile & Desktop) -->
+        <div class="mt-6 flex flex-col justify-end md:hidden">
+          <div class="bg-gray-50 border border-gray-200 rounded-lg px-5 py-3 shadow-sm text-right w-full sm:w-auto">
+            <p class="text-gray-700 text-sm font-medium">Total Harga Semua Barang:</p>
+            <p class="text-emerald-600 text-lg font-bold">Rp <?= number_format($total, 0, ',', '.') ?></p>
+          </div>
+          <a href="checkout.php?from=keranjang"
+            class="w-full sm:w-auto text-center px-6 py-3 bg-black text-white font-medium rounded-lg hover:bg-gray-900 active:scale-95 transition-transform shadow">
+            Checkout Semua
+          </a>
+        </div>
+
       </div>
 
       <!-- Tombol Checkout Semua -->
-      <div class="mt-6 flex justify-between items-center">
-        <a href="<?= htmlspecialchars($backUrl) ?>" class="inline-flex items-center gap-2 px-6 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition shadow">
+      <div class="mt-6 flex flex-col sm:flex-row justify-center sm:justify-between items-center gap-3 sm:gap-0 w-full">
+        <a href="<?= htmlspecialchars($backUrl) ?>"
+          class="w-full sm:w-auto text-center px-6 py-3 bg-gray-200 text-gray-800 font-medium rounded-lg hover:bg-gray-300 active:scale-95 transition-transform shadow">
           ← Kembali
         </a>
-        <a href="checkout.php?from=keranjang" class="inline-block px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-900 transition shadow">
+        <a href="checkout.php?from=keranjang"
+          class="hidden lg:block w-full sm:w-auto text-center px-6 py-3 bg-black text-white font-medium rounded-lg hover:bg-gray-900 active:scale-95 transition-transform shadow">
           Checkout Semua
         </a>
+
       </div>
+
+
     <?php endif; ?>
   </main>
+
 
   <script>
     setTimeout(() => {

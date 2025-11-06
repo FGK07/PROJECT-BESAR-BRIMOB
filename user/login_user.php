@@ -1,43 +1,41 @@
 <?php
 session_start();
 include "../koneksi.php";
-// pastikan admin session hilang
-unset($_SESSION['admin']);
-
-// menyertakan file (wajib ada) 
 require_once "../config.php";
 
-// buat url untuk login ke google
+// Pastikan admin logout dulu
+unset($_SESSION['admin']);
+
+// Buat URL login Google
 $url = $client->createAuthUrl();
 
+// Back URL
 $from = $_GET['from'] ?? '';
 $kategori = $_GET['kategori'] ?? '';
 $backUrl = '';
 
+$backUrl = "../homepage.php";
 if ($from === "homepage") {
     $backUrl = "../homepage.php";
-} elseif (isset($kategori)) {
-    $backUrl = "../produk/kategori.php?nama=" . $kategori;
+} elseif (!empty($kategori)) {
+    $backUrl = "../produk/kategori.php?nama=" . urlencode($kategori);
 }
 
-if (isset($_POST['login_user'])) {
-    $email = trim($_POST['email']);
-    $password = $_POST['password'];
+// === Jika tombol login ditekan ===
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login_user'])) {
+    $email = trim($_POST['email'] ?? '');
+    $password = $_POST['password'] ?? '';
 
-    if (empty($email) || empty($password)) {
-        $_SESSION['flash'] = "Data tidak boleh ada yang kosong";
-        header('location: login_user.php');
-        exit;
+    // === VALIDASI INPUT ===
+    if ($email === '' || $password === '') {
+        $_SESSION['flash'] = "❌ Data tidak boleh ada yang kosong.";
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $_SESSION['flash'] = "Format email tidak valid";
-        header('location: login_user.php');
-        exit;
+        $_SESSION['flash'] = "❌ Format email tidak valid.";
     } elseif (strlen($password) < 8) {
-        $_SESSION['flash'] = "Password minimal 8 karakter";
-        header('location: login_user.php');
-        exit;
+        $_SESSION['flash'] = "❌ Password minimal 8 karakter.";
     } else {
-        $stmt = $koneksi->prepare("SELECT id, nama, email, password FROM users WHERE email = ? AND role = 'user' LIMIT 1");
+        // === CEK USER ===
+        $stmt = $koneksi->prepare("SELECT id, nama, email, password, is_banned FROM users WHERE email = ? AND role = 'user' LIMIT 1");
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -45,33 +43,45 @@ if (isset($_POST['login_user'])) {
         if ($result->num_rows === 1) {
             $row = $result->fetch_assoc();
 
-            // verifikasi password dan simpan informasi ke session
-            if (password_verify($password, $row['password'])) {
+            // === CEK STATUS BANNED ===
+            if ((int)$row['is_banned'] === 1) {
+                $_SESSION['flash'] = "🚫 Akun kamu telah dibanned. Silakan hubungi admin.";
+            }
+            // === CEK PASSWORD ===
+            elseif (!password_verify($password, $row['password'])) {
+                $_SESSION['flash'] = "❌ Email atau password salah.";
+            }
+            // === LOGIN BERHASIL ===
+            else {
                 $_SESSION['user'] = [
-                    'id'   => $row['id'],
+                    'id' => $row['id'],
                     'nama' => $row['nama'],
                     'email' => $row['email'],
                     'role' => 'user'
                 ];
 
-                $_SESSION['flash'] = "Selamat datang " . $row['nama'] . " !";
-                header('location: ../homepage.php');
-                exit;
-            } else {
-                $_SESSION['flash'] = "Email atau password salah";
-                header('location: login_user.php');
+                $_SESSION['flash'] = "✅ Selamat datang, " . htmlspecialchars($row['nama']) . "!";
+                header('Location: ../homepage.php');
                 exit;
             }
         } else {
-            $_SESSION['flash'] = "User tidak ditemukan";
-            header('location: login_user.php');
-            exit;
+            $_SESSION['flash'] = "❌ User tidak ditemukan.";
         }
 
         $stmt->close();
     }
+
+    if ($from === "homepage") {
+        session_write_close();
+        header('Location: login_user.php?from=' . $from);
+    } else if (isset($kategori)) {
+        session_write_close();
+        header('Location: login_user.php?kategori=' . $kategori);
+        exit;
+    }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -84,16 +94,24 @@ if (isset($_POST['login_user'])) {
     <link rel="stylesheet" href="../src/output.css">
 </head>
 
-<body class="min-h-screen flex flex-col items-center py-10 px-8">
+<body class="min-h-screen flex flex-col items-center gap-2 py-10 px-8">
+
     <h2 class="font-lobster text-5xl text-center">BRIMOB SPORT</h2>
     <div class="shadow-[0_0_10px_rgba(0,0,0,0.3)] p-6 rounded-lg w-80 mt-auto mb-auto">
 
         <form action="" method="POST">
-            <?php if (isset($_SESSION["flash"])): ?>
-                <div class="bg-red-100 text-red-700 p-2 rounded mb-3">
-                    <?= htmlspecialchars($_SESSION["flash"]) ?>
+            <?php if (isset($_SESSION['flash'])): ?>
+                <div id="flash"
+                    class="fixed top-3 left-0 sm:left-1/2 sm:-translate-x-1/2 
+          w-full sm:w-auto sm:max-w-md 
+          bg-emerald-100 text-emerald-800 border border-emerald-300 
+          rounded-md sm:rounded-lg px-4 sm:px-6 py-2 sm:py-3 
+          text-center font-medium text-xs sm:text-sm 
+          shadow-md sm:shadow-lg 
+          z-[9999] animate-slide-down">
+                    <?= htmlspecialchars($_SESSION['flash']) ?>
                 </div>
-                <?php unset($_SESSION["flash"]); ?>
+                <?php unset($_SESSION['flash']); ?>
             <?php endif; ?>
 
             <h2 class="text-3xl mb-2 text-center font-bold">Masuk ke Brimob</h2>

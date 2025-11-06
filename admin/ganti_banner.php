@@ -40,6 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kelola Produk Banner</title>
     <link rel="stylesheet" href="../src/output.css">
 </head>
@@ -49,11 +50,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <!-- Flash Message -->
     <?php if (isset($_SESSION['flash'])): ?>
         <div id="flash"
-            class="fixed top-6 left-1/2 -translate-x-1/2 bg-emerald-100 border border-emerald-400 text-emerald-700 font-medium px-6 py-3 rounded-xl shadow-md z-50 animate-fade-in">
-            <?= htmlspecialchars($_SESSION['flash']);
-            unset($_SESSION['flash']); ?>
+            class="fixed top-3 left-0 sm:left-1/2 sm:-translate-x-1/2 
+          w-full sm:w-auto sm:max-w-md 
+          bg-emerald-100 text-emerald-800 border border-emerald-300 
+          rounded-md sm:rounded-lg px-4 sm:px-6 py-2 sm:py-3 
+          text-center font-medium text-xs sm:text-sm 
+          shadow-md sm:shadow-lg 
+          z-[9999] animate-slide-down">
+            <?= htmlspecialchars($_SESSION['flash']) ?>
         </div>
+        <?php unset($_SESSION['flash']); ?>
     <?php endif; ?>
+
 
     <!-- Card Form -->
     <div class="bg-white p-8 rounded-2xl shadow-2xl w-[420px] border border-gray-200">
@@ -68,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </label>
                 <div class="relative">
 
-                <!-- Dropdown -->
+                    <!-- Dropdown -->
                     <select name="produk_id"
                         class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-gray-800 focus:ring-2 focus:ring-black focus:border-black bg-white appearance-none cursor-pointer shadow-sm transition-all duration-150 ease-in-out">
                         <?php while ($p = $produk->fetch_assoc()): ?>
@@ -113,7 +121,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
     <script>
-
         // === Timeout Flash Message ===  
         const flash = document.getElementById('flash');
         if (flash) {

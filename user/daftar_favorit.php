@@ -72,35 +72,41 @@ if (isset($_GET['from'])) {
 
     <!-- Notifikasi Flash -->
     <?php if (isset($_SESSION['flash'])): ?>
-        <div id="flash" class="fixed top-0 bg-emerald-100 text-emerald-800 border border-emerald-300 rounded-md px-4 py-3 mb-6 text-center font-medium shadow-sm w-full">
+        <div id="flash"
+            class="fixed top-3 left-0 sm:left-1/2 sm:-translate-x-1/2 
+          w-full sm:w-auto sm:max-w-md 
+          bg-emerald-100 text-emerald-800 border border-emerald-300 
+          rounded-md sm:rounded-lg px-4 sm:px-6 py-2 sm:py-3 
+          text-center font-medium text-xs sm:text-sm 
+          shadow-md sm:shadow-lg 
+          z-[9999] animate-slide-down">
             <?= htmlspecialchars($_SESSION['flash']) ?>
         </div>
         <?php unset($_SESSION['flash']); ?>
     <?php endif; ?>
-
     <div class="max-w-6xl mx-auto px-6 py-10">
         <h1 class="text-3xl font-bold mb-8 text-gray-800 border-b-2 border-amber-400 pb-3">Daftar Favorit Saya</h1>
 
         <?php if (mysqli_num_rows($result) > 0): ?>
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+            <div class="grid grid-cols-3 gap-3 lg:grid-cols-4 lg:gap-10">
                 <?php while ($row = mysqli_fetch_assoc($result)): ?>
-                    <div class="bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col justify-between p-4">
+                    <div class="w-auto sm:w-[180px] lg:px-2 py-4 h-auto lg:w-auto rounded-2xl flex flex-col justify-between items-center shadow-[0_0_10px_rgba(0,0,0,0.3)] hover:scale-105 transition-transform duration-200 ease-in-out cursor-pointer">
 
                         <!-- Klik gambar → ke detail produk -->
                         <a href="../produk/detail_produk.php?id=<?= htmlspecialchars($row['id']) ?>&from=favorit"
                             class="block group">
                             <img src="../img/<?= htmlspecialchars($row['gambar']) ?>"
                                 alt="<?= htmlspecialchars($row['nama']) ?>"
-                                class="w-full h-48 object-contain rounded-lg mb-4 bg-gray-50 group-hover:scale-105 transition-transform duration-200">
+                                class="h-20 w-40 px-2 lg:h-40 object-contain mb-4">
                         </a>
 
                         <!-- Nama dan harga (nama juga bisa diklik) -->
                         <div class="text-center">
                             <a href="../produk/detail_produk.php?id=<?= htmlspecialchars($row['id']) ?>&from=favorit"
-                                class="font-bold text-lg text-gray-800 hover:text-amber-600 transition-colors duration-150 block mb-2">
+                                class="h-20 font-bold px-[8px] text-[10px] text-center lg:text-lg lg:text-center min-h-[60px] text-gray-800 hover:text-amber-600 transition-colors duration-150 block mb-2">
                                 <?= htmlspecialchars($row['nama']) ?>
                             </a>
-                            <p class="text-gray-600 mb-4">
+                            <p class="text-[8px] font-bold lg:text-lg text-gray-600">
                                 <?= "Rp " . number_format($row['harga'], 0, ',', '.') ?>
                             </p>
                         </div>
@@ -109,8 +115,8 @@ if (isset($_GET['from'])) {
                         <form action="favorit.php" method="POST" class="mt-auto">
                             <input type="hidden" name="produk_id" value="<?= $row['id'] ?>">
                             <button type="submit" name="hapus"
-                                class="w-full bg-amber-500 hover:bg-amber-600 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 cursor-pointer">
-                                Hapus dari Favorit
+                                class="w-full bg-amber-500 hover:bg-amber-600 text-white font-medium h-full lg:py-2 px-4 rounded-sm lg:rounded-lg transition-colors duration-200 cursor-pointer">
+                                <span class="bookmarkText align-middle leading-none text-[7px] lg:text-[16px]">Hapus dari Favorit</span>
                             </button>
                         </form>
                     </div>
@@ -131,15 +137,15 @@ if (isset($_GET['from'])) {
                 </a>
             </div>
         <?php endif; ?>
+        <!-- Tombol Kembali (fixed di bawah layar) -->
+        <div class="mt-10 z-[900]">
+            <a href="<?= htmlspecialchars($backUrl) ?>"
+                class="lg:px-6 py-2 px-3 lg:py-3 w-10 lg:w-20 bg-gray-500 text-white rounded-lg shadow-md hover:bg-gray-600 hover:shadow-lg transition-all duration-200">
+                ← Kembali
+            </a>
+        </div>
     </div>
 
-    <!-- Tombol Kembali (fixed di bawah layar) -->
-    <div class="fixed bottom-6 left-6 z-[900]">
-        <a href="<?= htmlspecialchars($backUrl) ?>"
-            class="px-6 py-3 bg-gray-500 text-white rounded-lg shadow-md hover:bg-gray-600 hover:shadow-lg transition-all duration-200">
-            ← Kembali
-        </a>
-    </div>
 
 
     <!-- Timeout  -->

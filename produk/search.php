@@ -3,7 +3,7 @@ session_start();
 include "../koneksi.php";
 
 $q = trim($_GET['q'] ?? "");
-$slug = trim($_GET['kategori'] ?? "");
+$slug = trim($_GET['kategori'] ?? $_POST['kategori'] ?? "");
 
 // Query pencarian
 $stmt = $koneksi->prepare("SELECT id, nama, harga, gambar FROM produk WHERE nama LIKE ?");
@@ -58,26 +58,34 @@ $backUrl = $_SESSION['backUrl'] ?? "../homepage.php";
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hasil Pencarian</title>
     <link rel="stylesheet" href="../src/output.css">
 </head>
 
-<body class="p-10">
+<body class="px-8 lg:px-30">
     <!-- Tampilkan Notif (flash) -->
-    <?php if (isset($_SESSION["flash"])): ?>
-        <div class="fixed top-0 left-0 bg-green-300 text-green-600 text-center rounded h-7 w-full transition-opacity duration-1000 ease-in-out" id="flash">
-            <?= htmlspecialchars($_SESSION["flash"]) ?>
+    <?php if (isset($_SESSION['flash'])): ?>
+        <div id="flash"
+            class="fixed top-3 left-0 sm:left-1/2 sm:-translate-x-1/2 
+          w-full sm:w-auto sm:max-w-md 
+          bg-emerald-100 text-emerald-800 border border-emerald-300 
+          rounded-md sm:rounded-lg px-4 sm:px-6 py-2 sm:py-3 
+          text-center font-medium text-xs sm:text-sm 
+          shadow-md sm:shadow-lg 
+          z-[9999] animate-slide-down">
+            <?= htmlspecialchars($_SESSION['flash']) ?>
         </div>
-        <?php unset($_SESSION["flash"]); ?>
+        <?php unset($_SESSION['flash']); ?>
     <?php endif; ?>
-    <h1 class="text-3xl font-bold mb-6">
+    <h1 class="text-3xl font-bold mb-6 mt-3">
         Hasil Pencarian: <?= htmlspecialchars($q) ?>
     </h1>
 
     <?php if ($result->num_rows === 0): ?>
         <p class="text-lg">Produk tidak ditemukan.</p>
     <?php else: ?>
-        <div class="grid grid-cols-4 gap-10">
+        <div class="grid grid-cols-3 gap-3 lg:grid-cols-4 lg:gap-10">
             <?php while ($row = $result->fetch_assoc()):
                 $isFavorit = false;
                 if (isset($_SESSION['user'])) {
@@ -86,28 +94,28 @@ $backUrl = $_SESSION['backUrl'] ?? "../homepage.php";
                     $cekFav = mysqli_query($koneksi, "SELECT 1 FROM favorit WHERE user_id = $user_id AND produk_id = $produk_id");
                     $isFavorit = mysqli_num_rows($cekFav) > 0;
                 } ?>
-                <div class="px-2 py-4 h-[350px] w-2xs rounded-2xl flex flex-col justify-between items-center shadow-[0_0_10px_rgba(0,0,0,0.3)] hover:scale-105 transition-transform duration-200 ease-in-out cursor-pointer">
+                <div class="w-auto sm:w-[180px] lg:px-2 py-4 h-auto lg:w-auto rounded-2xl flex flex-col justify-between items-center shadow-[0_0_10px_rgba(0,0,0,0.3)] hover:scale-105 transition-transform duration-200 ease-in-out cursor-pointer">
                     <a href="detail_produk.php?id=<?= $row['id'] ?>" class="flex flex-col justify-between items-center">
 
                         <!-- gambar -->
                         <img src="../img/<?= htmlspecialchars($row['gambar']) ?>"
                             alt="<?= htmlspecialchars($row['nama']) ?>"
-                            class="w-40 h-40 object-contain mb-4">
+                            class="h-20 w-40 px-2 lg:h-40 object-contain mb-4">
 
                         <!-- nama -->
-                        <p class="font-bold text-xl text-center min-h-[60px]">
+                        <p class="font-bold px-[8px] text-[10px] text-center lg:text-lg lg:text-center min-h-[60px]">
                             <?= htmlspecialchars($row['nama']) ?>
                         </p>
 
                         <!-- harga -->
-                        <p class="text-lg text-gray-600">
+                        <p class="text-[8px] font-bold lg:text-lg text-gray-600">
                             Rp <?= number_format($row['harga'], 2, ',', '.') ?>
                         </p>
                     </a>
                     <?php if (isset($_SESSION['user'])): ?>
-                        <div class="cursor-pointer flex items-start justify-evenly gap-2 w-full">
+                        <div class="cursor-pointer flex items-start justify-between lg:justify-evenly gap-1 sm:gap-2 w-full mt-2 sm:mt-3 lg:px-2 px-1">
                             <a href="detail_produk.php?id=<?= urlencode($row['id']) ?>&from=search&kategori=<?= urlencode($slug) ?>&q=<?= urlencode($q) ?>"
-                                class="px-4 py-2 w-16 h-10 text-center text-[15px] font-medium bg-black text-white rounded-lg hover:bg-gray-700 transition-all shadow-sm">
+                                class=" w-12 py-[6px] px-2 h-6 sm:w-16 sm:h-10 text-center text-[7px] sm:text-[16px] font-medium bg-black text-white rounded-md sm:rounded-lg hover:bg-gray-700 transition-all shadow-sm">
                                 Beli
                             </a>
                             <!-- Tombol favorit -->
@@ -118,43 +126,45 @@ $backUrl = $_SESSION['backUrl'] ?? "../homepage.php";
                                 <?php if ($isFavorit): ?>
                                     <!-- Sudah difavoritkan -->
                                     <button type="submit" name="hapus"
-                                        class="bookmarkBtn flex items-center justify-center gap-2 px-4 py-2 w-36 text-[15px] font-medium bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition-all shadow-sm cursor-pointer">
+                                        class="bookmarkBtn w-15 h-6 flex py-[4px] px-1 items-center justify-center lg:gap-2 lg:px-4 lg:py-2 lg:w-36 lg:h-10 lg:text-[16px] font-medium bg-amber-500 text-white rounded-md lg:rounded-lg hover:bg-amber-600 transition-all shadow-sm cursor-pointer">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"
-                                            class="bookmarkIcon w-[25px] h-[24px] align-middle relative top-[1px]">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.25v13.5L12 15l6.75 3.75V5.25A2.25 2.25 0 0016.5 3h-9A2.25 2.25 0 005.25 5.25z" />
+                                            class="bookmarkIcon w-[12px] h-[14px] lg:w-[25px] lg:h-[24px] align-middle relative top-[1px]">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M5.25 5.25v13.5L12 15l6.75 3.75V5.25A2.25 2.25 0 0016.5 3h-9A2.25 2.25 0 005.25 5.25z" />
                                         </svg>
-                                        <span class="bookmarkText align-middle leading-none">Tersimpan</span>
+                                        <span class="bookmarkText align-middle leading-none text-[8px] lg:text-[16px]">Tersimpan</span>
                                     </button>
                                 <?php else: ?>
                                     <!-- Belum difavoritkan -->
                                     <button type="submit" name="tambah"
-                                        class="bookmarkBtn flex items-center justify-center gap-2 px-4 py-2 w-36 text-[15px] font-medium bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-all shadow-sm cursor-pointer">
+                                        class="bookmarkBtn w-15 h-6 flex py-[4px] px-2 items-center justify-center lg:gap-2 lg:px-4 lg:py-2 lg:w-36 lg:h-10 lg:text-[16px] font-medium bg-gray-200 text-gray-800 lg:rounded-lg rounded-md hover:bg-gray-300 transition-all shadow-sm cursor-pointer">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"
-                                            class="bookmarkIcon w-[25px] h-[24px] align-middle relative top-[1px]">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.25v13.5L12 15l6.75 3.75V5.25A2.25 2.25 0 0016.5 3h-9A2.25 2.25 0 005.25 5.25z" />
+                                            class="bookmarkIcon w-[12px] h-[14px] lg:w-[25px] lg:h-[24px] align-middle relative top-[1px]">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M5.25 5.25v13.5L12 15l6.75 3.75V5.25A2.25 2.25 0 0016.5 3h-9A2.25 2.25 0 005.25 5.25z" />
                                         </svg>
-                                        <span class="bookmarkText align-middle leading-none">Favorit</span>
+                                        <span class="bookmarkText align-middle leading-none text-[7px] lg:text-[16px]">Favorit</span>
                                     </button>
                                 <?php endif; ?>
                             </form>
                         </div>
                     <?php endif; ?>
                     <?php if (isset($_SESSION['admin'])): ?>
-                        <div class="flex gap-2 mt-2">
+                        <div class="cursor-pointer flex items-start justify-between lg:justify-evenly gap-1 sm:gap-2 w-full mt-2 sm:mt-3 lg:px-2 px-1">
                             <a href="../admin/edit_produk.php?id=<?= $row['id'] ?>&from=search&kategori=<?= htmlspecialchars(urlencode($kategori)) ?>&q=<?= htmlspecialchars($q) ?>"
-                                class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm">Edit</a>
+                                class="w-12 py-[6px] px-2 h-6 sm:w-16 sm:h-10 text-center text-[7px] sm:text-[16px] font-medium bg-blue-500 text-white rounded hover:bg-blue-600 text-sm">Edit</a>
                             <a href="../admin/hapus_produk.php?id=<?= $row['id'] ?>&from=kategori&kategori=<?= htmlspecialchars(urlencode($kategori)) ?>&q=<?= htmlspecialchars($q) ?>"
                                 onclick="return confirm('Yakin ingin menghapus produk ini?')"
-                                class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-sm">Hapus</a>
+                                class="w-12 py-[6px] px-2 h-6 sm:w-16 sm:h-10 text-center text-[7px] sm:text-[16px] font-medium bg-red-500 text-white rounded hover:bg-red-600 text-sm">Hapus</a>
                         </div>
                     <?php endif; ?>
                 </div>
             <?php endwhile; ?>
         </div>
     <?php endif; ?>
-    <div class="relative mt-10 left-0 m-0 p-0 z-[900]">
+    <div class="relative mt-10 mb-8 left-0 m-0 p-0 z-[900]">
         <a href="<?= htmlspecialchars($backUrl) ?>"
-            class="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600">← Kembali</a>
+            class="px-2 lg:px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600">← Kembali</a>
     </div>
     <script>
         setTimeout(() => {

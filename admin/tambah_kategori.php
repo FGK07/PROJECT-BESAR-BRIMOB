@@ -35,6 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tambah Kategori</title>
     <link rel="stylesheet" href="../src/output.css">
 </head>
@@ -48,10 +49,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <!-- Flash Message -->
         <?php if (isset($_SESSION['flash'])): ?>
-            <div class="bg-blue-100 text-blue-700 p-3 rounded mb-4 text-center">
-                <?= htmlspecialchars($_SESSION['flash']);
-                unset($_SESSION['flash']); ?>
+            <div id="flash"
+                class="fixed top-3 left-0 sm:left-1/2 sm:-translate-x-1/2 
+          w-full sm:w-auto sm:max-w-md 
+          bg-emerald-100 text-emerald-800 border border-emerald-300 
+          rounded-md sm:rounded-lg px-4 sm:px-6 py-2 sm:py-3 
+          text-center font-medium text-xs sm:text-sm 
+          shadow-md sm:shadow-lg 
+          z-[9999] animate-slide-down">
+                <?= htmlspecialchars($_SESSION['flash']) ?>
             </div>
+            <?php unset($_SESSION['flash']); ?>
         <?php endif; ?>
 
         <!-- Form -->

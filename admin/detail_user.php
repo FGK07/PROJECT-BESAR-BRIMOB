@@ -41,7 +41,6 @@ if ($foto) {
 // 🔙 Back url
 if (isset($_GET['from']) && $_GET['from'] === "kelola_user") {
     $backUrl = "kelola_user.php";
-
 } else {
     // 🔙 Balik ke halaman kelola user, bukan asal utama
     $backUrl = $_SESSION['kelolaUserBack'] ?? "kelola_user.php";
@@ -50,24 +49,34 @@ if (isset($_GET['from']) && $_GET['from'] === "kelola_user") {
 
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detail Pengguna</title>
     <link rel="stylesheet" href="../src/output.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
         integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
+
 <body class="min-h-screen bg-gradient-to-b from-gray-50 to-gray-200 flex flex-col items-center py-10">
 
     <!-- Flash Message -->
     <?php if (isset($_SESSION['flash'])): ?>
         <div id="flash"
-            class="fixed top-6 left-1/2 -translate-x-1/2 bg-emerald-600 text-white font-medium px-6 py-3 rounded-lg shadow-md z-50">
+            class="fixed top-3 left-0 sm:left-1/2 sm:-translate-x-1/2 
+          w-full sm:w-auto sm:max-w-md 
+          bg-emerald-100 text-emerald-800 border border-emerald-300 
+          rounded-md sm:rounded-lg px-4 sm:px-6 py-2 sm:py-3 
+          text-center font-medium text-xs sm:text-sm 
+          shadow-md sm:shadow-lg 
+          z-[9999] animate-slide-down">
             <?= htmlspecialchars($_SESSION['flash']) ?>
         </div>
         <?php unset($_SESSION['flash']); ?>
     <?php endif; ?>
+
 
     <!-- Kartu Profil -->
     <div class="w-full max-w-3xl bg-white rounded-3xl shadow-[0_8px_30px_rgba(0,0,0,0.08)] border border-gray-200 overflow-hidden">
@@ -75,7 +84,7 @@ if (isset($_GET['from']) && $_GET['from'] === "kelola_user") {
         <!-- Header -->
         <div class="bg-gray-800 text-white py-6 px-8 flex flex-col sm:flex-row items-center gap-5">
 
-        <!-- Validasi -->
+            <!-- Validasi -->
             <?php if (!empty($fotoPath)): ?>
                 <img src="<?= htmlspecialchars($fotoPath) ?>" alt="Foto Profil"
                     class="w-28 h-28 rounded-full object-cover border-4 border-emerald-400 shadow-lg">

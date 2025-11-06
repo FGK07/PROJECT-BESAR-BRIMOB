@@ -49,20 +49,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Kategori</title>
     <link rel="stylesheet" href="../src/output.css">
 </head>
+
 <body class="min-h-screen flex items-center justify-center bg-gradient-to-b from-gray-50 to-gray-200 font-inter">
 
     <!-- Flash Message -->
     <?php if (isset($_SESSION['flash'])): ?>
-        <div id="flash" class="fixed top-6 left-1/2 -translate-x-1/2 bg-emerald-600 text-white font-medium px-6 py-3 rounded-lg shadow-lg z-50 animate-fade">
+        <div id="flash"
+            class="fixed top-3 left-0 sm:left-1/2 sm:-translate-x-1/2 
+          w-full sm:w-auto sm:max-w-md 
+          bg-emerald-100 text-emerald-800 border border-emerald-300 
+          rounded-md sm:rounded-lg px-4 sm:px-6 py-2 sm:py-3 
+          text-center font-medium text-xs sm:text-sm 
+          shadow-md sm:shadow-lg 
+          z-[9999] animate-slide-down">
             <?= htmlspecialchars($_SESSION['flash']) ?>
         </div>
         <?php unset($_SESSION['flash']); ?>
     <?php endif; ?>
+
+
 
     <!-- Form -->
     <div class="bg-white/90 backdrop-blur-md shadow-[0_8px_30px_rgba(0,0,0,0.08)] border border-gray-200 rounded-3xl p-8 w-full max-w-lg transition-all duration-300 hover:shadow-[0_10px_40px_rgba(0,0,0,0.1)]">
@@ -75,21 +87,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <!-- Input Nama -->
             <div>
                 <label class="block text-gray-700 font-semibold mb-1">Nama Kategori</label>
-                <input type="text" name="nama" value="<?= htmlspecialchars($kategori['nama']) ?>" 
-                class="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-gray-800 focus:ring-4 focus:ring-blue-200 focus:border-blue-500 outline-none shadow-sm transition-all duration-200"
-                placeholder="Masukkan nama kategori..."
-                required>
+                <input type="text" name="nama" value="<?= htmlspecialchars($kategori['nama']) ?>"
+                    class="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-gray-800 focus:ring-4 focus:ring-blue-200 focus:border-blue-500 outline-none shadow-sm transition-all duration-200"
+                    placeholder="Masukkan nama kategori..."
+                    required>
             </div>
 
             <!-- Tombol Aksi -->
             <div class="flex flex-col gap-3">
                 <button type="submit"
-                        class="w-full py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl shadow-md hover:shadow-lg hover:scale-[1.02] transition-all duration-200">
+                    class="w-full py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl shadow-md hover:shadow-lg hover:scale-[1.02] transition-all duration-200">
                     💾 Simpan Perubahan
                 </button>
 
                 <a href="kelola_produk.php"
-                class="text-center w-full py-3 border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-100 hover:text-gray-900 transition-all duration-200">
+                    class="text-center w-full py-3 border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-100 hover:text-gray-900 transition-all duration-200">
                     ← Kembali
                 </a>
             </div>
@@ -109,4 +121,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </script>
 
 </body>
+
 </html>

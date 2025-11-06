@@ -100,24 +100,24 @@ if (isset($_POST['konfirmasi'])) {
   $stmt->close();
 
   // 2️⃣ Buat transaksi otomatis
-// 2️⃣ Buat transaksi otomatis
-// 2️⃣ Buat transaksi otomatis
-if ($metode_pembayaran_id == 1) { // 1 = COD
-  $status_awal = 'pending'; // biar tampil normal di riwayat & kelola_transaksi
-} else {
-  $status_awal = 'pending'; // biar sama-sama nunggu admin
-}
+  // 2️⃣ Buat transaksi otomatis
+  // 2️⃣ Buat transaksi otomatis
+  if ($metode_pembayaran_id == 1) { // 1 = COD
+    $status_awal = 'pending'; // biar tampil normal di riwayat & kelola_transaksi
+  } else {
+    $status_awal = 'pending'; // biar sama-sama nunggu admin
+  }
 
-$jenis_pesanan = 'pre order';
+  $jenis_pesanan = 'pre order';
 
 
-$stmt = $koneksi->prepare("INSERT INTO transaksi 
+  $stmt = $koneksi->prepare("INSERT INTO transaksi 
   (user_id, metode_pembayaran_id, nama, alamat, no_hp, email, total, status, tanggal, pre_order_id, jenis_pesanan)
   VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?, ?)");
-$stmt->bind_param("iissssssis", $user_id, $metode_pembayaran_id, $nama, $alamat, $no_hp, $email, $total, $status_awal, $preorder_id, $jenis_pesanan);
-$stmt->execute();
-$transaksi_id = $stmt->insert_id;
-$stmt->close();
+  $stmt->bind_param("iissssssis", $user_id, $metode_pembayaran_id, $nama, $alamat, $no_hp, $email, $total, $status_awal, $preorder_id, $jenis_pesanan);
+  $stmt->execute();
+  $transaksi_id = $stmt->insert_id;
+  $stmt->close();
 
 
   // 3️⃣ Simpan detail produk ke detail_transaksi
@@ -154,6 +154,7 @@ $stmt->close();
 
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pre-Order - BRIMOB SPORT</title>
   <link rel="stylesheet" href="../src/output.css">
 </head>
@@ -161,7 +162,14 @@ $stmt->close();
 <body class="min-h-screen bg-gray-100 text-gray-800 font-sans flex flex-col items-center">
 
   <?php if (isset($_SESSION['flash'])): ?>
-    <div id="flash" class="fixed top-5 left-1/2 -translate-x-1/2 bg-emerald-600 text-white px-6 py-3 rounded-lg shadow-md z-50 font-medium">
+    <div id="flash"
+      class="fixed top-3 left-0 sm:left-1/2 sm:-translate-x-1/2 
+          w-full sm:w-auto sm:max-w-md 
+          bg-emerald-100 text-emerald-800 border border-emerald-300 
+          rounded-md sm:rounded-lg px-4 sm:px-6 py-2 sm:py-3 
+          text-center font-medium text-xs sm:text-sm 
+          shadow-md sm:shadow-lg 
+          z-[9999] animate-slide-down">
       <?= htmlspecialchars($_SESSION['flash']) ?>
     </div>
     <?php unset($_SESSION['flash']); ?>
@@ -172,55 +180,60 @@ $stmt->close();
     <p class="text-gray-500 text-sm">Pastikan data sudah benar sebelum kirim pre-order</p>
   </header>
 
-  <main class="flex flex-col items-center mt-5 mb-5 w-full px-4">
+  <main class="flex flex-col items-center mt-4 sm:mt-5 mb-6 w-full px-3 sm:px-4">
     <form method="post"
-      class="w-full max-w-lg bg-white border border-gray-200 rounded-2xl shadow-[0_4px_12px_rgba(0,0,0,0.07)] hover:shadow-[0_6px_16px_rgba(0,0,0,0.1)] transition-all duration-300 p-8 space-y-5">
+      class="w-full max-w-lg bg-white border border-gray-200 rounded-2xl shadow-[0_3px_10px_rgba(0,0,0,0.08)] hover:shadow-[0_5px_15px_rgba(0,0,0,0.12)] transition-all duration-300 p-5 sm:p-8 space-y-5">
 
-      <div class="flex gap-4 mb-6 border-b pb-4">
-        <img src="../img/<?= htmlspecialchars($produk['gambar']) ?>" alt="<?= htmlspecialchars($produk['nama']) ?>"
-          class="w-24 h-24 object-contain rounded-md border border-gray-200">
-        <div>
-          <p class="font-medium text-gray-800 text-base"><?= htmlspecialchars($produk['nama']) ?></p>
-          <p class="text-sm text-gray-600">Qty: <?= $qty ?></p>
-          <p class="font-semibold text-emerald-600 mt-1 text-base">Rp<?= number_format($total, 0, ',', '.') ?></p>
+      <!-- Produk -->
+      <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-4 sm:mb-6 border-b pb-4 sm:pb-6">
+        <div class="flex justify-center">
+          <img src="../img/<?= htmlspecialchars($produk['gambar']) ?>"
+            alt="<?= htmlspecialchars($produk['nama']) ?>"
+            class="w-32 h-32 sm:w-24 sm:h-24 object-contain rounded-lg border border-gray-200 shadow-sm">
+        </div>
+        <div class="flex flex-col justify-center text-center sm:text-left">
+          <p class="font-semibold text-gray-800 text-base sm:text-lg"><?= htmlspecialchars($produk['nama']) ?></p>
+          <p class="text-xs sm:text-sm text-gray-600 mt-0.5">Qty: <?= $qty ?></p>
+          <p class="font-bold text-emerald-600 mt-1 sm:mt-2 text-lg sm:text-base">Rp<?= number_format($total, 0, ',', '.') ?></p>
         </div>
       </div>
 
-      <div class="space-y-4">
+      <!-- Data Pemesan -->
+      <div class="space-y-3 sm:space-y-4">
         <label class="block">
-          <span class="font-semibold text-gray-700 mb-1 block">Nama Lengkap</span>
+          <span class="font-semibold text-gray-700 text-sm mb-1 block">Nama Lengkap</span>
           <input type="text" name="nama" value="<?= htmlspecialchars($userData['nama'] ?? '') ?>"
-            class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none" required>
+            class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm sm:text-base focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none" required>
         </label>
 
         <label class="block">
-          <span class="font-semibold text-gray-700 mb-1 block">Email</span>
+          <span class="font-semibold text-gray-700 text-sm mb-1 block">Email</span>
           <input type="email" name="email" value="<?= htmlspecialchars($userData['email'] ?? '') ?>"
-            class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none" required>
+            class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm sm:text-base focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none" required>
         </label>
 
         <label class="block">
-          <span class="font-semibold text-gray-700 mb-1 block">Alamat Lengkap</span>
+          <span class="font-semibold text-gray-700 text-sm mb-1 block">Alamat Lengkap</span>
           <textarea name="alamat" rows="3"
-            class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none resize-none" required><?= htmlspecialchars($userData['alamat'] ?? '') ?></textarea>
+            class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm sm:text-base focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none resize-none" required><?= htmlspecialchars($userData['alamat'] ?? '') ?></textarea>
         </label>
 
         <label class="block">
-          <span class="font-semibold text-gray-700 mb-1 block">Nomor HP</span>
+          <span class="font-semibold text-gray-700 text-sm mb-1 block">Nomor HP</span>
           <input type="text" name="no_hp" value="<?= htmlspecialchars($userData['nomor_telepon'] ?? '') ?>"
-            class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none" required>
+            class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm sm:text-base focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none" required>
         </label>
 
         <!-- Pilih Ukuran -->
         <div>
-          <span class="font-semibold text-gray-700 mb-2 block">Pilih Ukuran</span>
-          <div class="flex flex-wrap gap-3">
+          <span class="font-semibold text-gray-700 text-sm mb-2 block">Pilih Ukuran</span>
+          <div class="flex flex-wrap gap-2 sm:gap-3">
             <?php while ($row = $resultUkuran->fetch_assoc()): ?>
-              <label class="flex items-center space-x-2">
+              <label class="flex items-center gap-2 bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-300 cursor-pointer hover:border-emerald-500 transition-all">
                 <input type="radio" name="ukuran"
                   value="<?= htmlspecialchars($row['size']) ?>" required
-                  class="w-5 h-5 text-emerald-600 focus:ring-emerald-500 cursor-pointer">
-                <span class="text-sm"><?= htmlspecialchars($row['size']) ?></span>
+                  class="text-emerald-600 focus:ring-emerald-500 w-4 h-4 cursor-pointer">
+                <span class="text-xs sm:text-sm"><?= htmlspecialchars($row['size']) ?></span>
               </label>
             <?php endwhile; ?>
           </div>
@@ -228,9 +241,9 @@ $stmt->close();
 
         <!-- Metode Pembayaran -->
         <label class="block">
-          <span class="font-semibold text-gray-700 mb-1 block">Metode Pembayaran</span>
+          <span class="font-semibold text-gray-700 text-sm mb-1 block">Metode Pembayaran</span>
           <select name="metode_pembayaran_id"
-            class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none bg-white" required>
+            class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm sm:text-base focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none bg-white" required>
             <option value="">-- Pilih Metode Pembayaran --</option>
             <?php foreach ($metodePembayaran as $m): ?>
               <option value="<?= $m['id'] ?>"><?= htmlspecialchars($m['nama_metode']) ?></option>
@@ -239,17 +252,19 @@ $stmt->close();
         </label>
       </div>
 
-      <div class="mt-6 flex gap-3">
+      <!-- Tombol -->
+      <div class="mt-6 flex flex-col sm:flex-row gap-3">
         <button type="submit" name="konfirmasi"
-          class="w-1/2 px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-900 transition shadow-md text-sm font-medium cursor-pointer">
+          class="w-full sm:w-1/2 px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-900 active:scale-[0.98] transition shadow-md text-sm sm:text-base font-semibold cursor-pointer">
           Kirim Pre-Order
         </button>
         <a href="javascript:history.back()"
-          class="w-1/2 flex items-center justify-center px-5 py-3 bg-gray-200 text-gray-800 rounded-lg text-sm font-medium hover:bg-gray-300 transition shadow-md">
+          class="w-full sm:w-1/2 flex items-center justify-center px-6 py-3 bg-gray-200 text-gray-800 rounded-lg text-sm sm:text-base font-semibold hover:bg-gray-300 active:scale-[0.98] transition shadow-md">
           ← Kembali
         </a>
       </div>
 
+      <!-- Hidden Inputs -->
       <input type="hidden" name="produk_id" value="<?= $produk_id ?>">
       <input type="hidden" name="qty" value="<?= $qty ?>">
       <input type="hidden" name="from" value="<?= htmlspecialchars($from) ?>">
@@ -258,6 +273,7 @@ $stmt->close();
       <input type="hidden" name="konfirmasi" value="1">
     </form>
   </main>
+
 
   <script>
     setTimeout(() => {

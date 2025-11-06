@@ -7,14 +7,14 @@ require_once "../config.php";
 
 // buat url untuk login ke google
 $url = $client->createAuthUrl();
-$from = $_GET['from']??'';
-$kategori = $_GET['kategori']??'';
+$from = $_GET['from'] ?? '';
+$kategori = $_GET['kategori'] ?? '';
 $backUrl = '';
 
-if ($from === "homepage"){
+if ($from === "homepage") {
     $backUrl = "../homepage.php";
-}elseif (isset($kategori)){
-    $backUrl = "../produk/kategori.php?nama=".$kategori;
+} elseif (isset($kategori)) {
+    $backUrl = "../produk/kategori.php?nama=" . $kategori;
 }
 
 // cek input form dan ambil inputannya
@@ -79,16 +79,23 @@ if (isset($_POST['registrasi'])) {
     <link rel="stylesheet" href="../src/output.css">
 </head>
 
-<body class="min-h-screen flex flex-col items-center py-10 px-8">
+<body class="min-h-screen flex flex-col items-center gap-2 py-10 px-8">
     <h2 class="font-lobster text-5xl text-center">BRIMOB SPORT</h2>
     <div class="shadow-[0_0_10px_rgba(0,0,0,0.3)] p-6 rounded-lg w-80 mt-auto mb-auto">
 
         <form method="post" action="registrasi_user.php">
-            <?php if (isset($_SESSION["flash"])): ?>
-                <div class="bg-red-100 text-red-700 p-2 rounded mb-3">
-                    <?= htmlspecialchars($_SESSION["flash"]) ?>
+            <?php if (isset($_SESSION['flash'])): ?>
+                <div id="flash"
+                    class="fixed top-3 left-0 sm:left-1/2 sm:-translate-x-1/2 
+          w-full sm:w-auto sm:max-w-md 
+          bg-emerald-100 text-emerald-800 border border-emerald-300 
+          rounded-md sm:rounded-lg px-4 sm:px-6 py-2 sm:py-3 
+          text-center font-medium text-xs sm:text-sm 
+          shadow-md sm:shadow-lg 
+          z-[9999] animate-slide-down">
+                    <?= htmlspecialchars($_SESSION['flash']) ?>
                 </div>
-                <?php unset($_SESSION["flash"]); ?>
+                <?php unset($_SESSION['flash']); ?>
             <?php endif; ?>
             <h2 class="text-3xl mb-2 text-center font-bold">Daftar Sekarang</h2>
             <p class="mb-7 text-center">Sudah punya akun Brimob? <a href="login_user.php" class="text-blue-900">Masuk</a></p>
@@ -145,17 +152,17 @@ if (isset($_POST['registrasi'])) {
                 <?php unset($_SESSION['registrasi_sukses']); ?>
             <?php endif; ?>
         </form>
-        <?php if ($from === 'homepage'):?>
-            <a href="<?=$backUrl?>"
+        <?php if ($from === 'homepage'): ?>
+            <a href="<?= $backUrl ?>"
                 class="block w-full text-center mt-3 py-2 border border-gray-400 rounded-lg text-gray-700 hover:bg-gray-100 transition font-medium">
                 ← Kembali ke Homepage
             </a>
-            <?php elseif (isset($kategori)):?>
-                <a href="<?=$backUrl?>"
-                    class="block w-full text-center mt-3 py-2 border border-gray-400 rounded-lg text-gray-700 hover:bg-gray-100 transition font-medium">
-                    ← Kembali ke Kategori
-                </a>
-        <?php endif;?>
+        <?php elseif (isset($kategori)): ?>
+            <a href="<?= $backUrl ?>"
+                class="block w-full text-center mt-3 py-2 border border-gray-400 rounded-lg text-gray-700 hover:bg-gray-100 transition font-medium">
+                ← Kembali ke Kategori
+            </a>
+        <?php endif; ?>
     </div>
 
 </body>

@@ -15,6 +15,7 @@ if ($id <= 0) {
     header("Location: kelola_user.php");
     exit;
 }
+$status = $_POST['status'] ?? 0;
 
 // === Cek apakah user ada ===
 $stmt = $koneksi->prepare("SELECT id FROM users WHERE id = ?");
@@ -28,14 +29,26 @@ if (!$result->fetch_assoc()) {
 }
 $stmt->close();
 
-// === Hapus user ===
-$stmt = $koneksi->prepare("DELETE FROM users WHERE id = ?");
-$stmt->bind_param("i", $id);
-$success = $stmt->execute();
-$stmt->close();
+// === Banned user ===
+if ($status == 0) {
+    // Jika status 0 (aktif) → ubah jadi banned
+    $stmt = $koneksi->prepare("UPDATE users SET is_banned = 1 WHERE id = ?");
+    $stmt->bind_param("i", $id);
+    $success = $stmt->execute();
+    $stmt->close();
 
-// === Tentukan pesan ===
-$_SESSION['flash'] = $success ? "✅ User berhasil dihapus!" : "❌ Gagal menghapus user!";
+    $_SESSION['flash'] = $success ? "✅ User berhasil dibanned!" : "❌ Gagal membanned user!";
+} else {
+    // Jika status 1 (banned) → ubah jadi aktif (buka banned)
+    $stmt = $koneksi->prepare("UPDATE users SET is_banned = 0 WHERE id = ?");
+    $stmt->bind_param("i", $id);
+    $success = $stmt->execute();
+    $stmt->close();
+
+    $_SESSION['flash'] = $success ? "✅ Banned berhasil dibuka!" : "❌ Gagal membuka banned!";
+}
+
+
 
 // === Jika ada parameter "from", tentukan arah balik ===
 if (isset($_GET['from'])) {
@@ -68,4 +81,3 @@ if (isset($_GET['from'])) {
 // === Redirect ke halaman yang sesuai ===
 header("Location: $redirect");
 exit;
-?>

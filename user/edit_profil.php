@@ -97,26 +97,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <!-- Flash Message -->
     <?php if (isset($_SESSION['flash'])): ?>
         <div id="flash"
-            class="fixed top-4 left-1/2 -translate-x-1/2 bg-emerald-100 text-emerald-800 border border-emerald-300 px-6 py-3 rounded-lg font-medium shadow-md z-50">
+            class="fixed top-3 left-0 sm:left-1/2 sm:-translate-x-1/2 
+          w-full sm:w-auto sm:max-w-md 
+          bg-emerald-100 text-emerald-800 border border-emerald-300 
+          rounded-md sm:rounded-lg px-4 sm:px-6 py-2 sm:py-3 
+          text-center font-medium text-xs sm:text-sm 
+          shadow-md sm:shadow-lg 
+          z-[9999] animate-slide-down">
             <?= htmlspecialchars($_SESSION['flash']) ?>
         </div>
         <?php unset($_SESSION['flash']); ?>
     <?php endif; ?>
-
-    <!-- Tombol kembali -->
-    <div class="absolute top-6 left-6">
-        <a href="<?= htmlspecialchars($backUrl) ?>"
-            class="inline-flex items-center gap-2 px-5 py-2.5 bg-gray-700 hover:bg-gray-800 text-white text-sm font-medium rounded-lg shadow-md transition-all w-full">
-            <i class="fa-solid fa-arrow-left"></i> Kembali
-        </a>
-    </div>
 
     <!-- Kartu Edit Profil -->
     <div class="w-[420px] bg-white rounded-2xl shadow-[0_4px_25px_rgba(0,0,0,0.1)] border border-gray-200 p-8">
 
         <h1 class="text-center font-bold text-3xl text-gray-800 mb-8 tracking-wide">Edit Profil</h1>
 
-        <form method="post" enctype="multipart/form-data" class="space-y-5">
+        <form method="post" enctype="multipart/form-data" class="space-y-3">
             <div class="flex flex-col items-center mb-6">
                 <?php
                 $fotoPath = !empty($data['foto']) && file_exists("../" . $data['foto'])
@@ -140,41 +138,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <p class="text-xs text-gray-500 mt-4">Format: JPG, JPEG, PNG</p>
             </div>
-            
+
             <!-- Nama -->
             <div>
                 <label for="nama" class="block font-semibold text-gray-700 mb-1">Nama Lengkap</label>
-                <input type="text" name="nama" value="<?= htmlspecialchars($data['nama']) ?>"
+                <input type="text" name="nama" value="<?= htmlspecialchars($data['nama']) ?? '' ?>"
                     class="w-full border border-gray-300 rounded-lg px-4 py-2.5 bg-gray-50 focus:border-gray-700 focus:ring-1 focus:ring-gray-600 outline-none transition-all">
             </div>
 
             <!-- Email -->
             <div>
                 <label for="email" class="block font-semibold text-gray-700 mb-1">Email</label>
-                <input type="text" name="email" value="<?= htmlspecialchars($data['email']) ?>"
+                <input type="text" name="email" value="<?= htmlspecialchars($data['email']) ?? '' ?>"
                     class="w-full border border-gray-300 rounded-lg px-4 py-2.5 bg-gray-50 focus:border-gray-700 focus:ring-1 focus:ring-gray-600 outline-none transition-all">
             </div>
 
             <!-- Nomor Telepon -->
             <div>
                 <label for="no_telepon" class="block font-semibold text-gray-700 mb-1">Nomor Telepon</label>
-                <input type="text" name="no_telepon" value="<?= htmlspecialchars($data['nomor_telepon']) ?>"
+                <input type="text" name="no_telepon" value="<?= htmlspecialchars($data['nomor_telepon'] ?? '') ?>"
                     class="w-full border border-gray-300 rounded-lg px-4 py-2.5 bg-gray-50 focus:border-gray-700 focus:ring-1 focus:ring-gray-600 outline-none transition-all">
             </div>
 
             <!-- Alamat -->
             <div>
                 <label for="alamat" class="block font-semibold text-gray-700 mb-1">Alamat</label>
-                <input type="text" name="alamat" value="<?= htmlspecialchars($data['alamat']) ?>"
+                <input type="text" name="alamat" value="<?= htmlspecialchars($data['alamat'] ?? '') ?>"
                     class="w-full border border-gray-300 rounded-lg px-4 py-2.5 bg-gray-50 focus:border-gray-700 focus:ring-1 focus:ring-gray-600 outline-none transition-all">
             </div>
 
             <!-- Tombol -->
-            <div class="pt-4">
+            <div class="pt-4 flex flex-col gap-5">
                 <button type="submit"
                     class="w-full py-3 bg-black hover:bg-gray-800 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200 cursor-pointer">
                     <i class="fa-solid fa-save mr-2"></i> Simpan Perubahan
                 </button>
+                <a href="<?= htmlspecialchars($backUrl) ?>"
+                    class="w-full py-3 items-center text-center gap-2 px-5 py-2.5 bg-gray-700 hover:bg-gray-800 text-white text-sm font-medium rounded-lg shadow-md transition-all w-full">
+                    <i class="fa-solid fa-arrow-left"></i> Kembali
+                </a>
             </div>
         </form>
     </div>

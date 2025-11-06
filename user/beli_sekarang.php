@@ -170,73 +170,83 @@ if (isset($_POST['konfirmasi'])) {
 
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Checkout - BRIMOB SPORT</title>
   <link rel="stylesheet" href="../src/output.css">
 </head>
 
 <body class="min-h-screen bg-gray-100 text-gray-800 font-sans flex flex-col items-center">
 
-  <!-- ✅ Flash Message -->
+  <!-- Flash Message -->
   <?php if (isset($_SESSION['flash'])): ?>
     <div id="flash"
-      class="fixed top-5 left-1/2 -translate-x-1/2 bg-emerald-600 text-white px-6 py-3 rounded-lg shadow-md z-50 font-medium">
+      class="fixed top-3 left-0 sm:left-1/2 sm:-translate-x-1/2 
+          w-full sm:w-auto sm:max-w-md 
+          bg-emerald-100 text-emerald-800 border border-emerald-300 
+          rounded-md sm:rounded-lg px-4 sm:px-6 py-2 sm:py-3 
+          text-center font-medium text-xs sm:text-sm 
+          shadow-md sm:shadow-lg 
+          z-[9999] animate-slide-down">
       <?= htmlspecialchars($_SESSION['flash']) ?>
     </div>
     <?php unset($_SESSION['flash']); ?>
   <?php endif; ?>
-
   <!-- Header -->
-  <header class="text-center py-5 bg-white w-full border-b border-gray-200 shadow-sm">
-    <h1 class="text-4xl font-bold text-gray-800 mb-1">Checkout</h1>
-    <p class="text-gray-500 text-sm">Pastikan data dan pesananmu sudah benar sebelum konfirmasi</p>
+  <header class="text-center py-4 sm:py-5 bg-white w-full border-b border-gray-200 shadow-sm">
+    <h1 class="text-2xl sm:text-4xl font-bold text-gray-800 mb-1">Checkout</h1>
+    <p class="text-gray-500 text-xs sm:text-sm">Pastikan data dan pesananmu sudah benar sebelum konfirmasi</p>
   </header>
 
   <!-- Form Container -->
-  <main class="flex flex-col items-center mt-5 mb-5 w-full px-4">
+  <main class="flex flex-col items-center mt-4 sm:mt-6 mb-6 w-full px-3 sm:px-4">
     <form method="post"
-      class="w-full max-w-lg bg-white border border-gray-200 rounded-2xl shadow-[0_4px_12px_rgba(0,0,0,0.07)] hover:shadow-[0_6px_16px_rgba(0,0,0,0.1)] transition-all duration-300 p-8 space-y-5">
+      class="w-full max-w-lg bg-white border border-gray-200 rounded-2xl shadow-[0_4px_12px_rgba(0,0,0,0.07)] hover:shadow-[0_6px_16px_rgba(0,0,0,0.1)] transition-all duration-300 p-4 sm:p-8 space-y-4 sm:space-y-5">
 
       <!-- Produk -->
-      <div class="flex gap-4 mb-6 border-b pb-4">
+      <div class="flex gap-3 sm:gap-4 mb-6 border-b pb-4">
         <img src="../img/<?= htmlspecialchars($produk['gambar']) ?>"
           alt="<?= htmlspecialchars($produk['nama']) ?>"
-          class="w-24 h-24 object-contain rounded-md border border-gray-200">
-        <div>
-          <p class="font-medium text-gray-800 text-base"><?= htmlspecialchars($produk['nama']) ?></p>
-          <p class="text-sm text-gray-600">Ukuran: <?= htmlspecialchars($ukuran ?: '-') ?></p>
-          <p class="text-sm text-gray-600">Qty: <?= $qty ?></p>
-          <p class="font-semibold text-emerald-600 mt-1 text-base">Rp<?= number_format($total, 0, ',', '.') ?></p>
+          class="w-20 h-20 sm:w-24 sm:h-24 object-contain rounded-md border border-gray-200">
+        <div class="flex-1">
+          <p class="font-medium text-gray-800 text-sm sm:text-base leading-tight"><?= htmlspecialchars($produk['nama']) ?></p>
+          <p class="text-xs sm:text-sm text-gray-600">Ukuran: <?= htmlspecialchars($ukuran ?: '-') ?></p>
+          <p class="text-xs sm:text-sm text-gray-600">Qty: <?= $qty ?></p>
+          <p class="font-semibold text-emerald-600 mt-1 text-sm sm:text-base">
+            Rp<?= number_format($total, 0, ',', '.') ?>
+          </p>
         </div>
       </div>
 
       <!-- Input Data -->
-      <div class="space-y-4">
+      <div class="space-y-3 sm:space-y-4">
         <label class="block">
-          <span class="font-semibold text-gray-700 mb-1 block">Nama Lengkap</span>
+          <span class="font-semibold text-gray-700 text-sm sm:text-base mb-1 block">Nama Lengkap</span>
           <input type="text" name="nama" value="<?= htmlspecialchars($userData['nama'] ?? '') ?>"
-            class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none" required>
+            class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm sm:text-base focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none" required>
         </label>
 
         <label class="block">
-          <span class="font-semibold text-gray-700 mb-1 block">Email</span>
+          <span class="font-semibold text-gray-700 text-sm sm:text-base mb-1 block">Email</span>
           <input type="email" name="email" value="<?= htmlspecialchars($userData['email'] ?? '') ?>"
-            class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none" required>
+            class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm sm:text-base focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none" required>
         </label>
 
-        <textarea name="alamat" rows="3"
-          class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none resize-none text-left" required><?= htmlspecialchars(trim($userData['alamat'] ?? '')) ?></textarea>
-
+        <label class="block">
+          <span class="font-semibold text-gray-700 text-sm sm:text-base mb-1 block">Alamat Lengkap</span>
+          <textarea name="alamat" rows="3"
+            class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm sm:text-base focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none resize-none" required><?= htmlspecialchars(trim($userData['alamat'] ?? '')) ?></textarea>
+        </label>
 
         <label class="block">
-          <span class="font-semibold text-gray-700 mb-1 block">Nomor HP</span>
+          <span class="font-semibold text-gray-700 text-sm sm:text-base mb-1 block">Nomor HP</span>
           <input type="text" name="no_hp" value="<?= htmlspecialchars($userData['nomor_telepon'] ?? '') ?>"
-            class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none" required>
+            class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm sm:text-base focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none" required>
         </label>
 
         <label class="block">
-          <span class="font-semibold text-gray-700 mb-1 block">Metode Pembayaran</span>
+          <span class="font-semibold text-gray-700 text-sm sm:text-base mb-1 block">Metode Pembayaran</span>
           <select name="metode_pembayaran_id"
-            class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none bg-white" required>
+            class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm sm:text-base focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none bg-white" required>
             <option value="">-- Pilih Metode Pembayaran --</option>
             <?php foreach ($metodePembayaran as $m): ?>
               <option value="<?= $m['id'] ?>"><?= htmlspecialchars($m['nama_metode']) ?></option>
@@ -246,18 +256,18 @@ if (isset($_POST['konfirmasi'])) {
       </div>
 
       <!-- Tombol Aksi -->
-      <div class="mt-6 flex gap-3">
+      <div class="mt-6 flex flex-col sm:flex-row gap-3">
         <button type="submit" name="konfirmasi"
-          class="w-1/2 px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-900 transition shadow-md text-sm font-medium cursor-pointer">
+          class="w-full sm:w-1/2 px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-900 transition shadow-md text-sm sm:text-base font-medium cursor-pointer">
           Konfirmasi Pesanan
         </button>
 
         <a href="javascript:history.back()"
-          class="w-1/2 flex items-center justify-center px-5 py-3 bg-gray-200 text-gray-800 rounded-lg text-sm font-medium hover:bg-gray-300 transition shadow-md">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          class="w-full sm:w-1/2 flex items-center justify-center px-5 py-3 bg-gray-200 text-gray-800 rounded-lg text-sm sm:text-base font-medium hover:bg-gray-300 transition shadow-md">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
           </svg>
-          <span>Kembali</span>
+          Kembali
         </a>
       </div>
 
@@ -271,7 +281,7 @@ if (isset($_POST['konfirmasi'])) {
     </form>
   </main>
 
-  <!-- Flash fade -->
+  <!-- Flash Fade -->
   <script>
     setTimeout(() => {
       const flash = document.getElementById("flash");
@@ -282,7 +292,7 @@ if (isset($_POST['konfirmasi'])) {
       }
     }, 3000);
   </script>
-
 </body>
+
 
 </html>

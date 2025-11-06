@@ -38,7 +38,6 @@ if (isset($_POST['login_admin'])) {
             $_SESSION['flash'] = "Selamat datang admin " . $row['nama'] . " !";
             header("Location: dashboard_admin.php");
             exit;
-
         } else {
             $_SESSION['flash'] = "❌ Email atau password admin salah!";
         }
@@ -64,7 +63,14 @@ if (isset($_POST['login_admin'])) {
 <body class="min-h-screen flex flex-col items-center py-10 px-8">
     <!-- Flash Message -->
     <?php if (isset($_SESSION['flash'])): ?>
-        <div id="flash" class="fixed top-0 bg-emerald-100 text-emerald-800 border border-emerald-300 rounded-md px-4 py-3 mb-6 text-center font-medium shadow-sm w-full">
+        <div id="flash"
+            class="fixed top-3 left-0 sm:left-1/2 sm:-translate-x-1/2 
+          w-full sm:w-auto sm:max-w-md 
+          bg-emerald-100 text-emerald-800 border border-emerald-300 
+          rounded-md sm:rounded-lg px-4 sm:px-6 py-2 sm:py-3 
+          text-center font-medium text-xs sm:text-sm 
+          shadow-md sm:shadow-lg 
+          z-[9999] animate-slide-down">
             <?= htmlspecialchars($_SESSION['flash']) ?>
         </div>
         <?php unset($_SESSION['flash']); ?>
@@ -94,7 +100,6 @@ if (isset($_POST['login_admin'])) {
         </form>
     </div>
     <script>
-
         // === Timeout flash message
         setTimeout(() => {
             const flash = document.getElementById('flash');
