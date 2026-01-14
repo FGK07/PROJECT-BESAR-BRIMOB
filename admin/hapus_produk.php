@@ -8,15 +8,17 @@ if (!isset($_SESSION['admin'])) {
     exit;
 }
 
-// === Validasi input ID ===
-if (empty($_POST['id']) || !is_numeric($_POST['id'])) {
+$id = $_GET['id'] ?? $_POST['id'] ?? null;
+if (empty($id) || !is_numeric($id)) {
     die("Produk tidak valid!");
 }
-$produkId = intval($_POST['id']);
+$produkId = intval($id);
+
 
 // === Ambil parameter asal ===
-$from = $_POST['from'] ?? '';
-$kategori = $_POST['kategori'] ?? '';
+$from = $_POST['from'] ?? $_GET['from'] ?? '';
+$kategori = $_POST['kategori'] ?? $_GET['kategori'] ?? '';
+
 
 // === Default halaman kembali ===
 $backUrl = "dashboard_admin.php";

@@ -186,7 +186,7 @@ $backUrl = $_SESSION['backUrl'] ?? "dashboard_admin.php";
 
                                     <td class="py-2 sm:py-3 px-3 text-center">
                                         <div class="flex flex-wrap justify-center gap-1 sm:gap-2">
-                                            <a href="edit_produk.php?id=<?= $row['id'] ?>&from=kelola_produk&from=<?= urlencode($from) ?>"
+                                            <a href="edit_produk.php?id=<?= $row['id']; ?>&source=kelola_produk&kategori=<?= urlencode($row['slug'] ?? '') ?>"
                                                 class="px-3 py-1 sm:px-4 sm:py-1.5 bg-blue-600 text-white rounded-md text-[11px] sm:text-sm font-medium hover:bg-blue-700 transition shadow-sm">
                                                 Edit
                                             </a>

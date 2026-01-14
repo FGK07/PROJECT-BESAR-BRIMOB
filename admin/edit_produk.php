@@ -20,6 +20,9 @@ $kategori = $_GET['kategori'] ?? ($_GET['nama'] ?? '');
 $source = $_GET['source'] ?? '';
 $q = $_GET['q'] ?? '';
 
+if (empty($from) && !empty($source)) {
+    $from = $source;
+}
 // Simpan session 
 if (!empty($kategori)) {
     $_SESSION['lastKategori'] = $kategori;
@@ -31,15 +34,9 @@ if (!empty($from) && $from !== 'detail_produk') {
 // Redirect
 switch ($from) {
     case 'dashboard_admin':
-        // Jika berasal dari dashboard_admin
-        if ($source === 'admin') {
-            // Jika sumber (source) admin -> kembali ke dashboard admin
-            $_SESSION['backUrl'] = "dashboard_admin.php";
-        } else {
-            // Default jika from=dashboard_admin tapi bukan source=admin
-            $_SESSION['backUrl'] = "kelola_produk.php?from=dashboard_admin";
-        }
+        $_SESSION['backUrl'] = "dashboard_admin.php";
         break;
+
 
     case 'kategori':
         $_SESSION['backUrl'] = "kategori.php?nama=" . urlencode($kategori);
@@ -104,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $seri_number = trim($_POST['seri_number']);
     $warna       = trim($_POST['warna']);
     $deskripsi   = trim($_POST['deskripsi']);
-    $teks_banner = trim($_POST['teks_banner'] ?? '');
+    $teks_banner = trim($_POST['teks_banner']);
     $harga       = intval($_POST['harga']);
     $stok        = intval($_POST['stok']);
     $kategori_id = intval($_POST['kategori_id']);
@@ -113,7 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $gambar = $produk['gambar'];
 
     if (!empty($_FILES['gambar']['name'])) {
-        $targetDir = "../img/";
+        $targetDir = __DIR__ . "/../img/";
         $fileName = basename($_FILES['gambar']['name']);
         $targetFilePath = $targetDir . $fileName;
         $fileType = strtolower(pathinfo($targetFilePath, PATHINFO_EXTENSION));
@@ -178,7 +175,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     } else {
         $_SESSION['flash'] = "❌ Gagal update produk: " . $stmt->error;
-        header("location: edit_profil.php?id=$id");
+        header("location: edit_produk.php?id=$id");
     }
 
     $stmt->close();
@@ -226,15 +223,17 @@ $stmt->close();
         <?php unset($_SESSION['flash']); ?>
     <?php endif; ?>
 
-    <div class="bg-white shadow-lg rounded-2xl w-full max-w-6xl mx-auto p-6 sm:p-8">
-        <h1 class="text-2xl font-bold mb-6 sm:mb-8 text-gray-800 text-center flex items-center justify-center gap-2">
+    <div class="bg-white shadow-lg rounded-2xl w-[90%] max-w-7xl mx-auto p-8">
+
+        <h1 class="text-2xl font-bold mb-8 text-gray-800 text-center flex items-center justify-center gap-2">
             Edit Produk 🧩
         </h1>
 
-        <!-- ======= DESKTOP (dua form berdampingan) ======= -->
-        <div class="hidden sm:grid sm:grid-cols-2 sm:gap-8">
-            <!-- === Form Data Produk === -->
-            <form action="" method="post" enctype="multipart/form-data" id="formEditKiri" class="space-y-4 text-sm">
+        <form action="" method="post" enctype="multipart/form-data"
+            class="grid sm:grid-cols-2 gap-10 text-sm">
+
+            <!-- === Data Produk (Kiri) === -->
+            <div class="space-y-4 border-r border-gray-200 pr-6">
                 <h2 class="text-lg font-semibold text-gray-800 border-b pb-2 mb-2">Data Produk</h2>
 
                 <div>
@@ -298,152 +297,24 @@ $stmt->close();
                         class="w-full border border-gray-300 rounded-md px-3 py-2 bg-white text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
                     <p class="text-xs text-gray-400 mt-1">Kosongkan jika tidak ingin mengganti</p>
                 </div>
-            </form>
+            </div>
 
-            <!-- === Form Ukuran & Stok === -->
-            <form action="" method="post" enctype="multipart/form-data" id="formEditKanan"
-                class="space-y-4 text-sm flex flex-col justify-between">
-                <div>
-                    <h2 class="text-lg font-semibold text-gray-800 border-b pb-2 mb-2">Ukuran & Stok</h2>
+            <!-- === Ukuran & Stok (Kanan) === -->
+            <div class="space-y-4">
+                <h2 class="text-lg font-semibold text-gray-800 border-b pb-2 mb-2">Ukuran & Stok</h2>
 
-                    <div class="grid grid-cols-4 gap-2 border border-gray-200 rounded-md p-3 bg-gray-50 max-h-[500px] overflow-y-auto">
-                        <?php
-                        $stmt = $koneksi->prepare("SELECT ukuran_id, stok FROM produk_ukuran WHERE produk_id = ?");
-                        $stmt->bind_param("i", $id);
-                        $stmt->execute();
-                        $stokResult = $stmt->get_result();
-                        $stokMap = [];
-                        while ($s = $stokResult->fetch_assoc()) {
-                            $stokMap[$s['ukuran_id']] = $s['stok'];
-                        }
-                        $stmt->close();
-
-                        $allUkuran->data_seek(0);
-                        while ($row = $allUkuran->fetch_assoc()):
-                            $checked = in_array($row['id'], $selectedUkuran);
-                            $stokValue = $stokMap[$row['id']] ?? 0;
-                        ?>
-                            <div class="flex items-center justify-between bg-white border rounded px-2 py-1">
-                                <label class="flex items-center gap-1 text-gray-700 text-xs">
-                                    <input type="checkbox" name="ukuran[]" value="<?= $row['id'] ?>" <?= $checked ? 'checked' : '' ?>
-                                        class="w-3 h-3 text-blue-600 focus:ring-blue-500">
-                                    <?= htmlspecialchars($row['size']) ?>
-                                </label>
-                                <input type="number" name="stok_ukuran[<?= $row['id'] ?>]" value="<?= $stokValue ?>"
-                                    class="w-12 border border-gray-300 rounded px-1 text-xs text-center focus:ring-1 focus:ring-blue-500">
-                            </div>
-                        <?php endwhile; ?>
-                    </div>
-                </div>
-
-                <div class="flex justify-end gap-3 pt-6">
-                    <a href="<?= htmlspecialchars($backUrl) ?>"
-                        class="flex items-center justify-center w-1/2 bg-gray-400 text-white py-2 rounded-md hover:bg-gray-500 text-sm font-medium shadow">
-                        ← Kembali
-                    </a>
-                    <button id="btnUpdateDesktop" type="submit"
-                        class="flex items-center justify-center w-1/2 bg-black text-white py-2 rounded-md hover:bg-gray-800 text-sm font-medium shadow gap-2">
-                        <svg id="spinnerDesktop" class="animate-spin hidden w-4 h-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor"
-                                d="M4 12a8 8 0 018-8v4l3.5-3.5L12 0v4a8 8 0 100 16v-4l3.5 3.5L12 24v-4a8 8 0 01-8-8z"></path>
-                        </svg>
-                        <span id="btnTextDesktop">Update</span>
-                    </button>
-                </div>
-            </form>
-        </div>
-
-        <!-- ======= MOBILE VERSION (dua step) ======= -->
-        <div class="sm:hidden flex flex-col gap-6 text-sm">
-
-            <!-- STEP 1 -->
-            <form id="formStep1" class="space-y-4">
-                <h2 class="text-lg font-semibold text-gray-800 text-center">Data Produk</h2>
-
-                <div>
-                    <label class="block text-gray-700 font-medium mb-1">Kode Produk</label>
-                    <input type="text" name="kode_produk" value="<?= htmlspecialchars($produk['kode_produk']) ?>"
-                        class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                </div>
-
-                <div>
-                    <label class="block text-gray-700 font-medium mb-1">Nama Produk</label>
-                    <input type="text" name="nama" value="<?= htmlspecialchars($produk['nama']) ?>"
-                        class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                </div>
-
-                <div>
-                    <label class="block text-gray-700 font-medium mb-1">Harga</label>
-                    <input type="number" name="harga" value="<?= htmlspecialchars($produk['harga']) ?>"
-                        class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                </div>
-
-                <div>
-                    <label class="block text-gray-700 font-medium mb-1">Kategori</label>
-                    <select name="kategori_id"
-                        class="w-full border border-gray-300 rounded-md px-3 py-2 bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                        <?php $kategori->data_seek(0);
-                        while ($row = $kategori->fetch_assoc()): ?>
-                            <option value="<?= $row['id'] ?>" <?= ($row['id'] == $produk['kategori_id']) ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($row['nama']) ?>
-                            </option>
-                        <?php endwhile; ?>
-                    </select>
-                </div>
-
-                <div>
-                    <label class="block text-gray-700 font-medium mb-1">Upload Gambar</label>
-                    <input type="file" name="gambar" accept=".jpg,.jpeg,.png,.gif,.webp"
-                        class="w-full border border-gray-300 rounded-md px-3 py-2 bg-white text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                </div>
-
-                <div class="flex flex-col gap-3 mt-4">
-                    <button type="button" id="btnNext1"
-                        class="w-full bg-black text-white py-2.5 rounded-md hover:bg-gray-700 font-semibold">
-                        Lanjut ke Deskripsi →
-                    </button>
-                    <a href="<?= htmlspecialchars($backUrl) ?>"
-                        class="block w-full bg-gray-400 text-white py-2.5 rounded-md hover:bg-gray-500 text-center font-semibold">
-                        ← Kembali
-                    </a>
-                </div>
-            </form>
-
-            <!-- STEP 2 -->
-            <form id="formStep2" class="hidden space-y-4">
-                <h2 class="text-lg font-semibold text-gray-800 text-center">Deskripsi & Banner</h2>
-
-                <div>
-                    <label class="block text-gray-700 font-medium mb-1">Deskripsi</label>
-                    <textarea name="deskripsi" rows="6"
-                        class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none min-h-[160px] shadow-sm"><?= htmlspecialchars($produk['deskripsi']) ?></textarea>
-                </div>
-
-                <div>
-                    <label class="block text-gray-700 font-medium mb-1">Teks Banner</label>
-                    <textarea name="teks_banner" rows="2"
-                        class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none"><?= htmlspecialchars($produk['teks_banner'] ?? '') ?></textarea>
-                </div>
-
-                <div class="flex flex-col gap-3 mt-4">
-                    <button type="button" id="btnNext2"
-                        class="w-full bg-black text-white py-2.5 rounded-md hover:bg-gray-700 font-semibold">
-                        Lanjut ke Ukuran & Stok →
-                    </button>
-                    <button type="button" id="btnPrev1"
-                        class="w-full bg-gray-400 text-white py-2.5 rounded-md hover:bg-gray-500 font-semibold">
-                        ← Kembali ke Data Produk
-                    </button>
-                </div>
-            </form>
-
-            <!-- STEP 3 -->
-            <form action="" method="post" enctype="multipart/form-data" id="formStep3" class="hidden space-y-4">
-                <h2 class="text-lg font-semibold text-gray-800 text-center">Ukuran & Stok</h2>
-
-                <div class="grid grid-cols-2 gap-2 border border-gray-200 rounded-md p-3 bg-gray-50">
+                <div class="grid grid-cols-4 gap-2 border border-gray-200 rounded-md p-3 bg-gray-50 max-h-[500px] overflow-y-auto">
                     <?php
+                    $stmt = $koneksi->prepare("SELECT ukuran_id, stok FROM produk_ukuran WHERE produk_id = ?");
+                    $stmt->bind_param("i", $id);
+                    $stmt->execute();
+                    $stokResult = $stmt->get_result();
+                    $stokMap = [];
+                    while ($s = $stokResult->fetch_assoc()) {
+                        $stokMap[$s['ukuran_id']] = $s['stok'];
+                    }
+                    $stmt->close();
+
                     $allUkuran->data_seek(0);
                     while ($row = $allUkuran->fetch_assoc()):
                         $checked = in_array($row['id'], $selectedUkuran);
@@ -461,24 +332,150 @@ $stmt->close();
                     <?php endwhile; ?>
                 </div>
 
-                <div class="flex flex-col-reverse justify-between gap-3 pt-4">
-                    <button type="button" id="btnPrev2"
-                        class="w-1/2 bg-gray-400 text-white py-2 rounded-md hover:bg-gray-500 font-semibold w-full">
-                        ← Kembali Ke Deskripsi
-                    </button>
-                    <button id="btnSubmit" type="submit"
-                        class="w-1/2 bg-black text-white py-2 rounded-md hover:bg-gray-800 font-semibold flex justify-center items-center gap-2 w-full">
-                        <svg id="spinner" class="animate-spin hidden w-4 h-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
-                            viewBox="0 0 24 24">
+                <div class="flex justify-end gap-3 pt-6">
+                    <a href="<?= htmlspecialchars($backUrl) ?>"
+                        class="flex items-center justify-center w-1/2 bg-gray-400 text-white py-2 rounded-md hover:bg-gray-500 text-sm font-medium shadow">
+                        ← Kembali
+                    </a>
+                    <button id="btnUpdateDesktop" type="submit"
+                        class="flex items-center justify-center w-1/2 bg-black text-white py-2 rounded-md hover:bg-gray-800 text-sm font-medium shadow gap-2">
+                        <svg id="spinnerDesktop" class="animate-spin hidden w-4 h-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                             <path class="opacity-75" fill="currentColor"
                                 d="M4 12a8 8 0 018-8v4l3.5-3.5L12 0v4a8 8 0 100 16v-4l3.5 3.5L12 24v-4a8 8 0 01-8-8z"></path>
                         </svg>
-                        <span id="btnText">Update</span>
+                        <span id="btnTextDesktop">Update</span>
                     </button>
                 </div>
-            </form>
-        </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- ======= MOBILE VERSION (dua step) ======= -->
+    <div class="sm:hidden flex flex-col gap-6 text-sm">
+
+        <!-- STEP 1 -->
+        <form id="formStep1" class="space-y-4">
+            <h2 class="text-lg font-semibold text-gray-800 text-center">Data Produk</h2>
+
+            <div>
+                <label class="block text-gray-700 font-medium mb-1">Kode Produk</label>
+                <input type="text" name="kode_produk" value="<?= htmlspecialchars($produk['kode_produk']) ?>"
+                    class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            </div>
+
+            <div>
+                <label class="block text-gray-700 font-medium mb-1">Nama Produk</label>
+                <input type="text" name="nama" value="<?= htmlspecialchars($produk['nama']) ?>"
+                    class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            </div>
+
+            <div>
+                <label class="block text-gray-700 font-medium mb-1">Harga</label>
+                <input type="number" name="harga" value="<?= htmlspecialchars($produk['harga']) ?>"
+                    class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            </div>
+
+            <div>
+                <label class="block text-gray-700 font-medium mb-1">Kategori</label>
+                <select name="kategori_id"
+                    class="w-full border border-gray-300 rounded-md px-3 py-2 bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    <?php $kategori->data_seek(0);
+                    while ($row = $kategori->fetch_assoc()): ?>
+                        <option value="<?= $row['id'] ?>" <?= ($row['id'] == $produk['kategori_id']) ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($row['nama']) ?>
+                        </option>
+                    <?php endwhile; ?>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-gray-700 font-medium mb-1">Upload Gambar</label>
+                <input type="file" name="gambar" accept=".jpg,.jpeg,.png,.gif,.webp"
+                    class="w-full border border-gray-300 rounded-md px-3 py-2 bg-white text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
+            </div>
+
+            <div class="flex flex-col gap-3 mt-4">
+                <button type="button" id="btnNext1"
+                    class="w-full bg-black text-white py-2.5 rounded-md hover:bg-gray-700 font-semibold">
+                    Lanjut ke Deskripsi →
+                </button>
+                <a href="<?= htmlspecialchars($backUrl) ?>"
+                    class="block w-full bg-gray-400 text-white py-2.5 rounded-md hover:bg-gray-500 text-center font-semibold">
+                    ← Kembali
+                </a>
+            </div>
+        </form>
+
+        <!-- STEP 2 -->
+        <form id="formStep2" class="hidden space-y-4">
+            <h2 class="text-lg font-semibold text-gray-800 text-center">Deskripsi & Banner</h2>
+
+            <div>
+                <label class="block text-gray-700 font-medium mb-1">Deskripsi</label>
+                <textarea name="deskripsi" rows="6"
+                    class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none min-h-[160px] shadow-sm"><?= htmlspecialchars($produk['deskripsi']) ?></textarea>
+            </div>
+
+            <div>
+                <label class="block text-gray-700 font-medium mb-1">Teks Banner</label>
+                <textarea name="teks_banner" rows="2"
+                    class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none"><?= htmlspecialchars($produk['teks_banner'] ?? '') ?></textarea>
+            </div>
+
+            <div class="flex flex-col gap-3 mt-4">
+                <button type="button" id="btnNext2"
+                    class="w-full bg-black text-white py-2.5 rounded-md hover:bg-gray-700 font-semibold">
+                    Lanjut ke Ukuran & Stok →
+                </button>
+                <button type="button" id="btnPrev1"
+                    class="w-full bg-gray-400 text-white py-2.5 rounded-md hover:bg-gray-500 font-semibold">
+                    ← Kembali ke Data Produk
+                </button>
+            </div>
+        </form>
+
+        <!-- STEP 3 -->
+        <form action="" method="post" enctype="multipart/form-data" id="formStep3" class="hidden space-y-4">
+            <h2 class="text-lg font-semibold text-gray-800 text-center">Ukuran & Stok</h2>
+
+            <div class="grid grid-cols-2 gap-2 border border-gray-200 rounded-md p-3 bg-gray-50">
+                <?php
+                $allUkuran->data_seek(0);
+                while ($row = $allUkuran->fetch_assoc()):
+                    $checked = in_array($row['id'], $selectedUkuran);
+                    $stokValue = $stokMap[$row['id']] ?? 0;
+                ?>
+                    <div class="flex items-center justify-between bg-white border rounded px-2 py-1">
+                        <label class="flex items-center gap-1 text-gray-700 text-xs">
+                            <input type="checkbox" name="ukuran[]" value="<?= $row['id'] ?>" <?= $checked ? 'checked' : '' ?>
+                                class="w-3 h-3 text-blue-600 focus:ring-blue-500">
+                            <?= htmlspecialchars($row['size']) ?>
+                        </label>
+                        <input type="number" name="stok_ukuran[<?= $row['id'] ?>]" value="<?= $stokValue ?>"
+                            class="w-12 border border-gray-300 rounded px-1 text-xs text-center focus:ring-1 focus:ring-blue-500">
+                    </div>
+                <?php endwhile; ?>
+            </div>
+
+            <div class="flex flex-col-reverse justify-between gap-3 pt-4">
+                <button type="button" id="btnPrev2"
+                    class="w-1/2 bg-gray-400 text-white py-2 rounded-md hover:bg-gray-500 font-semibold w-full">
+                    ← Kembali Ke Deskripsi
+                </button>
+                <button id="btnSubmit" type="submit"
+                    class="w-1/2 bg-black text-white py-2 rounded-md hover:bg-gray-800 font-semibold flex justify-center items-center gap-2 w-full">
+                    <svg id="spinner" class="animate-spin hidden w-4 h-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor"
+                            d="M4 12a8 8 0 018-8v4l3.5-3.5L12 0v4a8 8 0 100 16v-4l3.5 3.5L12 24v-4a8 8 0 01-8-8z"></path>
+                    </svg>
+                    <span id="btnText">Update</span>
+                </button>
+            </div>
+        </form>
+    </div>
 
 
     </div>

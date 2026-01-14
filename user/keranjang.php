@@ -168,7 +168,7 @@ else {
                         <input type="hidden" name="produk_id" value="<?= htmlspecialchars($item['id']) ?>">
                         <input type="hidden" name="ukuran" value="<?= htmlspecialchars($item['ukuran']) ?>">
                         <button type="submit"
-                          class="w-full sm:w-auto px-3 py-2 text-sm font-semibold bg-black text-white rounded-lg hover:bg-gray-800 active:scale-95 transition-transform">
+                          class="w-full sm:w-auto px-3 py-2 text-sm font-semibold bg-black text-white rounded-lg hover:bg-gray-800 active:scale-95 transition-transform cursor-pointer">
                           Checkout
                         </button>
                       </form>

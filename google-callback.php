@@ -61,7 +61,7 @@ if (isset($_GET['code'])) {
     }
 
     // Cek user di database
-    $stmt = $koneksi->prepare("SELECT id, nama, foto, email, role FROM users WHERE email = ? LIMIT 1");
+    $stmt = $koneksi->prepare("SELECT id, nama, foto, email, role, is_banned FROM users WHERE email = ? LIMIT 1");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -70,7 +70,15 @@ if (isset($_GET['code'])) {
         // User sudah ada → update foto kalau berubah
         $user = $result->fetch_assoc();
 
-        // 🔹 Cegah penimpaan foto manual
+        if ((int)$user['is_banned'] === 1) {
+            $_SESSION['flash'] = "🚫 Akun kamu telah dibanned. Silakan hubungi admin.";
+
+            // sesuaikan path ini dengan lokasi file login_user.php kamu
+            header("Location: user/login_user.php");
+            exit;
+        }
+
+        //  Cegah penimpaan foto manual
         if (
             empty($user['foto']) || // belum punya foto sama sekali
             str_contains($user['foto'], 'googleusercontent') || // foto lama masih dari google

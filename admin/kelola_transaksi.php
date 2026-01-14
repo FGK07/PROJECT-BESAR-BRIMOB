@@ -152,7 +152,7 @@ $backUrl = $_SESSION['backUrl'] ?? "dashboard_admin.php"; // default
                             name="sort"
                             id="sort"
                             onchange="this.form.submit()"
-                            class="appearance-none bg-white border border-gray-300 text-gray-800 text-[12px] sm:text-sm rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 px-2 sm:px-3 py-1.5 sm:py-2 pr-8 cursor-pointer hover:border-gray-400 shadow-sm w-full sm:w-auto">
+                            class="appearance-none bg-white border border-gray-300 text-gray-800 text-[12px] sm:text-sm rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 px-2 sm:px-3 py-1.5 sm:py-2 pr-10 cursor-pointer hover:border-gray-400 shadow-sm w-full sm:w-auto">
                             <option value="desc" <?= ($sort === 'desc') ? 'selected' : '' ?>>Terbaru</option>
                             <option value="asc" <?= ($sort === 'asc') ? 'selected' : '' ?>>Terlama</option>
                         </select>

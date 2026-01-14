@@ -230,7 +230,7 @@ if (!isset($_SESSION['admin']) || $_SESSION['admin']['role'] !== 'admin') {
                                 ⏱️ Kategori:<br>Asics Running Shoes
                         </div>
                         <!-- Tombol -->
-                        <a href="../produk/detail_produk.php?id=<?= urlencode($row['id']) ?>&from=<?= urlencode('dashboard_admin') ?>"
+                        <a href="../produk/detail_produk.php?id=<?= urlencode($row['id']) ?>&from=dashboard_admin&source=admin" "
                             class="inline-flex ml-auto bg-black rounded-md sm:rounded-lg px-2 sm:px-3 py-[4px] sm:py-2 cursor-pointer 
                                 hover:bg-gray-800 shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-200 ease-in-out">
                             <div class="flex items-center justify-center lg:h-10 h-full w-full gap-1 sm:gap-2">
@@ -242,11 +242,11 @@ if (!isset($_SESSION['admin']) || $_SESSION['admin']['role'] !== 'admin') {
 
                     <!-- Tombol Edit, Hapus, Ganti -->
                     <div class="flex gap-2 mt-4 justify-end">
-                        <a href="edit_produk.php?id=<?= $banner['id'] ?>&from=<?= urlencode($_SERVER['REQUEST_URI']) ?>"
+                        <a href="edit_produk.php?id=<?= $banner['id'] ?>&from=dashboard_admin&source=admin" 
                             class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm">
                             Edit
                         </a>
-                        <a href="ganti_banner.php"
+                        <a href="ganti_banner.php?from=dashboard_admin"
                             class="px-4 py-2 bg-amber-500 text-white rounded hover:bg-amber-600 text-sm">
                             Ganti
                         </a>

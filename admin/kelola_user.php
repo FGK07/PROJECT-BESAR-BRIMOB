@@ -153,7 +153,7 @@ $no = ($orderDirection === 'ASC') ? 1 : $totalRows;
                                         Lihat
                                     </a>
 
-                                    <form action="../admin/hapus_user.php" method="POST"
+                                    <form action="../admin/banned_user.php" method="POST"
                                         onsubmit="return <?= ($row['status'] == 1) ? 'confirmUnbanned' : 'confirmBanned' ?>(event, <?= $row['id'] ?>)"
                                         class="inline">
                                         <input type="hidden" name="id" value="<?= $row['id'] ?>">

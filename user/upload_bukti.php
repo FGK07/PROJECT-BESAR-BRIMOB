@@ -51,7 +51,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!is_dir("../uploads/bukti")) mkdir("../uploads/bukti", 0777, true);
 
-    // 🔒 Validasi ekstensi
     $allowed_ext = ['jpg', 'jpeg', 'png', 'pdf'];
     if (!in_array($ext, $allowed_ext)) {
       $_SESSION['flash'] = "⚠️ Hanya file JPG, PNG, atau PDF yang diperbolehkan.";
@@ -59,16 +58,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       exit;
     }
 
-    // 🔒 Validasi ukuran file (maks 10MB)
-    if ($_FILES['bukti']['size'] > 10 * 1024 * 1024) {
-      $_SESSION['flash'] = "⚠️ Ukuran file maksimal 10MB.";
+    if ($_FILES['bukti']['size'] > 20 * 1024 * 1024) {
+      $_SESSION['flash'] = "⚠️ Ukuran file maksimal 20MB.";
       header("Location: upload_bukti.php?id=$id&from=$from&kategori=" . urlencode($kategori));
       exit;
     }
 
-    // ✅ Upload file ke server
+    // CEK ERROR UPLOAD DARI PHP
+    if ($_FILES['bukti']['error'] !== UPLOAD_ERR_OK) {
+      $_SESSION['flash'] = "⚠️ Terjadi kesalahan saat upload (error code: " . $_FILES['bukti']['error'] . ").";
+      header("Location: upload_bukti.php?id=$id&from=$from&kategori=" . urlencode($kategori));
+      exit;
+    }
+
     if (move_uploaded_file($_FILES['bukti']['tmp_name'], $path)) {
-      // ✅ Update database
       $query = "
         UPDATE transaksi 
         SET bukti_transfer = ?, waktu_upload = NOW(), status = 'pending'
@@ -79,17 +82,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $stmt->execute();
       $stmt->close();
 
-      // ✅ Flash message dan redirect
       $_SESSION['flash'] = "✅ Bukti pembayaran berhasil diunggah dan Pesanan berhasil dibuat. Menunggu konfirmasi admin.";
       header("Location: ../user/riwayat.php");
       exit;
     } else {
       $_SESSION['flash'] = "⚠️ Gagal upload file, coba lagi.";
+      header("Location: upload_bukti.php?id=$id&from=$from&kategori=" . urlencode($kategori));
+      exit;
     }
   } else {
     $_SESSION['flash'] = "⚠️ Pilih file terlebih dahulu.";
+    header("Location: upload_bukti.php?id=$id&from=$from&kategori=" . urlencode($kategori));
+    exit;
   }
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -103,6 +110,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 
 <body class="min-h-screen bg-gray-100 flex flex-col items-center justify-center text-gray-800 px-4 sm:px-0">
+  <?php if (isset($_SESSION['flash'])): ?>
+    <div id="flash"
+      class="fixed top-3 left-0 sm:left-1/2 sm:-translate-x-1/2 
+          w-full sm:w-auto sm:max-w-md 
+          bg-emerald-100 text-emerald-800 border border-emerald-300 
+          rounded-md sm:rounded-lg px-4 sm:px-6 py-2 sm:py-3 
+          text-center font-medium text-xs sm:text-sm 
+          shadow-md sm:shadow-lg 
+          z-[9999] animate-slide-down">
+      <?= htmlspecialchars($_SESSION['flash']) ?>
+    </div>
+    <?php unset($_SESSION['flash']); ?>
+  <?php endif; ?>
 
   <div class="bg-white w-full max-w-[420px] sm:w-[420px] p-6 sm:p-8 rounded-2xl shadow-xl border border-gray-200 my-10 sm:my-0">
 
@@ -174,6 +194,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
   </div>
+  <script>
+        setTimeout(() => {
+            const flash = document.getElementById('flash');
+            if (flash) {
+                flash.style.opacity = "0"; // mulai fade out
+                setTimeout(() => flash.remove(), 1000); // hapus setelah 1 detik
+            }
+        }, 3000); // tampil 3 detik dulu
+  </script>
 </body>
 
 </html>

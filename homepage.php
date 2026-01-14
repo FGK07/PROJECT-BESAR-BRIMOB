@@ -16,6 +16,7 @@ unset($_SESSION['admin']);
     <title>Homepage</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="src/output.css">
+      <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
 </head>
 
 <body class="">
@@ -286,7 +287,7 @@ unset($_SESSION['admin']);
 
                 ?>
 
-                    <div class="w-auto sm:w-[180px] lg:px-2 py-4 h-auto lg:w-auto rounded-2xl flex flex-col justify-between items-center shadow-[0_0_10px_rgba(0,0,0,0.3)] hover:scale-105 transition-transform duration-200 ease-in-out cursor-pointer">
+                    <div class="w-auto sm:w-[180px] lg:px-2 py-4 h-auto lg:w-auto rounded-2xl flex flex-col justify-between items-center shadow-[0_0_10px_rgba(0,0,0,0.3)] hover:scale-105 transition-transform duration-200 ease-in-out cursor-pointer" data-aos="fade-up>
                         <a href="produk/detail_produk.php?id=<?= htmlspecialchars($row['id']) ?>&from=homepage" class="flex flex-col justify-between items-center ">
 
                             <!-- Gambar -->
@@ -346,7 +347,12 @@ unset($_SESSION['admin']);
         <br>
         <br>
     </main>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
     <script>
+        AOS.init({
+            once: true,
+
+        });
         setTimeout(() => {
             const flash = document.getElementById('flash');
             if (flash) {

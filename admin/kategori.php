@@ -96,8 +96,7 @@ $result2 = $stmt2->get_result();
             <!-- Judul -->
             <h1 class="hidden sm:block ml-4 mr-2 text-sm lg:text-4xl font-lobster">BRIMOB SPORT</h1>
 
-            <label for=" menu-toggle"
-                class="fixed inset-0 bg-transparent hidden peer-checked:block z-30 transition-opacity duration-800 left-64"></label>
+            <label for="menu-toggle" class="fixed inset-0 bg-transparent hidden peer-checked:block z-30 transition-opacity duration-800 left-64"></label>
 
             <!-- Sidebar BRIMOB SPORT -->
             <div id="sidebar"
